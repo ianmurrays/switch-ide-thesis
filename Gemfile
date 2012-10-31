@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
+gem "terminal-notifier-guard"
+gem "rb-fsevent", :require => false
 gem "guard"
-gem "growl"
 gem "guard-shell"
-# gem "pandoc-ruby"
