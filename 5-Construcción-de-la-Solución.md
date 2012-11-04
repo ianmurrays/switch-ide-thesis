@@ -3,8 +3,8 @@
 Este capítulo tiene por objetivo detallar todo el proceso del diseño y desarrollo de la solución propuesta anteriormente. Se dividirá en los siguiente subcapítulos:
 
   a. Diseño de la solución: básicamente se explicará cómo ambas componentes (frontend y backend) interactuarán entre sí. Además, cómo funcionarán ambas partes en términos de manipulación de archivos y el proyecto completo. Por último, se explicará cómo se diseñó el componente principal de la solución (el editor de interfaces).
-  b. Flujo del usuario: ***EXPLICAR ESTO, SON BÁSICAMENTE CASOS DE USO***
-  c. Primera etapa de construcción: el desarrollo de la solución se dividió en dos etapas principalmente. Primero, se desarrolló lo que se denominó una "base" de la solución. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
+  b. Flujo del usuario: acá se explicarán algunos de los casos de uso de la aplicación, como el inicio de sesión, o el ensamblado de los proyectos.
+  c. Primera etapa de construcción: el desarrollo de la solución se dividió en dos etapas principalmente. Primero, se desarrolló lo que se denominó una "base" del programa. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
   d. Primera etapa de construcción: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es el grueso de la solución, se decidió dedicar una etapa completa a él.
 
 ## Diseño de la Solución
@@ -76,6 +76,8 @@ A continuación se detallarán algunos de los casos de uso que tiene la aplicaci
 ### Caso de Uso: El usuario crea un proyecto nuevo
 
 ### Caso de Uso: El usuario abre un proyecto existente
+
+
 
 ## Primera Etapa de Construcción
 
@@ -154,8 +156,105 @@ En caso de que el usuario haga click en un archivo, se le pasa la instancia del 
 
 Para esta etapa de la construcción, se incluyó además la posibilidad de ensamblar y ejecutar el proyecto. Para esto, se agregaron métodos en el modelo de proyectos que hace llamadas al backend para ensamblar y ejectuar el servidor de pruebas. El evento es manejado por la barra de navegación, que incluye varios elementos de menú que por esta etapa se mantuvieron inactivos. A la derecha de la barra de navegación se encuentra un botón que permite ensamblar y ejecutar el proyecto con un sólo click, y otros dos que permiten ejecutarlo y ensamblarlo por separado.
 
-
 ## Segunda Etapa de Construcción
+
+La segunda etapa de construccón del proyecto se dedicó principalmente a la implementación del editor de templates. Dado que esta es la parte más importante del proyecto se dedicó una etapa completa a ella.
+
+El editor se diseñó de manera que en el centro se tuviera una vista en vivo de lo que se estaba construyendo, mientras que a la derecha se listaran todos los componentes disponibles para agregar al template. Dado que los templates son básicamente HTML, es el navegador el que se encarga de mostrar cómo se vería finalmente. Por esto, lo que se hizo fue agregar elementos a la lista de componentes de manera que al arrastrarlos hacia el centro (el editor), simplemente se agregue su representación en HTML y el navegador se encargaría de mostrar su "vista previa".
+
+Entonces, en la lista de componentes se decidió agregar botones, tablas, formularios, campos de texto, entre otros, y dentro de ellos (en código, no visible para el usuario) agregar un fragmento de HTML que se agregaría al template. Entonces, utilizando jQuery UI^[definir esto!], cada componente se convierte en un elemento arrastrable. Con jQuery UI, se necesita convertir elementos en "arrastrables" y además, crear elementos en donde "soltar" lo que el usuario está arrastrando. En este sentido, y, en un primer intento, se convierten todos los elementos en la vista previa en "soltables".
+
+```coffeescript
+# Con la siguiente llamada, se convierte cada elemento en el editor
+# de vistas en "soltable".
+@$("*").droppable()
+```
+
+Con este primer acercamiento, ya se podía arrastrar y soltar componentes. El problema es que se podían arrastar componentes como botones y otras cosas dentro de elementos HTML que no correspondía, como imágenes, menús, etc. Para esto, se incluyeron ciertas excepciones a la llamada anterior, como sigue:
+
+```coffeescript
+# Seleccionar todos los elementos, excepto los que están en la
+# llamada .not()
+@$("*").not('img, button, input, select, option, optgroup').droppable()
+```
+
+Con esto, se simplificó un tanto el arrastrado de componentes, evitando que algunos quedaran dentro de elementos que no correspondía. Ahora, se notó que era difícil saber dónde realmente se estaba dejando el componente que el usuario estaba arrastrando, por lo que se incluyó retroalimentación visual al momento de arrastar, es decir, cuando el usuario esté arrastrando el elemento, el elemento en donde "caería" el componente se rodea con un borde amarillo, como muestra la Figura \ref{asdfaksjdha}. ***PONER FIGURA!*** Esto se logra usando propiedades de jQuery UI:
+
+```coffeescript
+exceptions = 'img, button, input, select, option, optgroup'
+@$("*").not(exceptions).droppable
+  hoverClass: "hovering" # Esto agrega una clase CSS con un borde.
+```
+
+La propiedad `hoverClass` agrega una clase CSS al elemento donde se estaría arrastrando el componente y la remueve al salir. Con esto se agrega un borde que facilite al usuario saber dónde caerá el componente.
+
+Se decidió además agregar componentes que sólo sirven si se arrastran dentro de un formulario. En este punto, el usuario puede arrastrar estos componentes a cualquier parte, lo que hace de su uso algo complicado. Para solucionar esto, se implementó un sistema en el cual cada componente tiene especificado dónde puede ser arrastrado. Por ejemplo, los botones pueden ser arrastrados a cualquier parte:
+
+```html
+<div class="switch-component" data-component-type="button">
+  <div class="payload">
+    <button type="button" class="btn btn-primary">Button</button>
+  </div>
+
+  <span class="name">Button</span>
+</div>
+```
+
+En cambio, los elementos de un formulario sólo pueden arrastrarse a un formulario previamente colocado. En el siguiente fragmento se puede notar la propiedad `data-component-drop-only` que contiene una cadena de texto con selectores CSS en dónde puede ser agregado.
+
+```html
+<div class="switch-component" data-component-type="label-button" 
+     data-component-drop-only="form">
+  <div class="payload">
+    <div class="control-group">
+      <div class="control-label"><label for="new_input">Label</label></div>
+      <div class="controls">
+        <input type="text" name="new_input" id="new_input">
+      </div>
+    </div>
+  </div>
+
+  <span class="name">Form Input</span>
+</div>
+```
+
+Lo anterior, junto con el siguiente Coffeescript, permite que los componentes puedan ser arrastrados sólo a ciertos elementos, si es que lo especifican:
+
+```coffeescript
+makeDroppable: (only) ->
+  # Si se especificó only, entonces usarlo, de lo contrario
+  # permitir cualquier elemento.
+  if only
+    only = "#view_container #{only}"
+  else
+    only = "#view_container, #view_container *"
+
+  @$(only).not(exceptions).droppable
+    hoverClass: "hovering"
+```
+
+Hasta ahora, el editor de templates agrega los componentes anexándolos al final de la posición en la que el usuario las deja. Esto lo imposibilita de agregar componentes al principio de una lista por ejemplo. ***FIGURA EXPLICANDO ESTO?*** Por lo tanto, se agrego la posibilidad de cambiar ese comportamiento. Al momento de arrastrar un componente, el usuario puede presionar (y mantener presionada) la tecla `SHIFT`, de manera que al dejar un componente, éste se anexe al principio en vez de al final, permitiendo al usuario agregar cosas al principio de listas o formularios, por ejemplo.
+
+Por último, para facilitar aún más el arrastrado de componentes, se agregó una vista previa de cómo quedaría el componente que se está arrastrando una vez que se suelte. La idea es que al estar arrastrando un elemento, éste aparece en el editor con una ligera opacidad. Esto se logró usando algunas llamadas de jQuery UI:
+
+```coffeescript
+# ...
+@$(only).not(exceptions).droppable
+  hoverClass: "hovering"
+  greedy: yes
+  drop: (e, u) -> 
+    self.putComponent(self, $(this), u, no)
+  over: (e, u) ->
+    self.putComponent(self, $(this), u, yes)
+  out: (e, u) -> 
+    self.removeComponent()
+```
+
+Con estas llamadas, al momento de que el usuario esté sobre un elemento ("over"), literalmente se agrega el componente al editor, para luego eliminarlo en caso de salirse ("out"), o bien dejarlo definitivamente al soltarlo ("drop"). ***FOTOO!!!***
+
+Por último, el editor de templates también debería permitir al usuario editar el código directamente, en caso de que no exista algún componente o bien se necesite agregar cierta lógica más allá de HTML. Para esto, se utilizó el mismo editor de código que para los archivos normales. Se agregaron dos pestañas en la parte superior del editor de templates que permiten cambiar entre el editor visual y el código fuente (ver Figura \ref{figure:html-editor}).
+
+![Estas pestañas permiten al usuario cambiar entre el modo visual y el editor HTML \label{figure:html-editor}](figures/html-editor.png)
 
 
 [^backbone-colection]: En Backbone, existen modelos y, a su vez, colecciones de modelos. Las colecciones son básicamente un conjunto de instancias de un tipo de modelo. Por ejemplo, en el caso de este trabajo, existirán colecciones de *archivos*.
