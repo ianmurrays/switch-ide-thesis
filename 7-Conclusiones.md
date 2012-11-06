@@ -14,6 +14,20 @@ El haber dividido el proceso de construcción en dos fases permitió evaluar la 
 
 La división en dos fases fue acertada, y el orden del desarrollo de los diferentes componentes fue correcto, dado que de haber prototipado el editor de interfaces antes de comenzar con la base, se podría haber creado (accidentalmente) un editor completamente incompatible con la solución final. Ahora bien, el haber prototipado un editor de interfaces antes de comenzar con el desarrollo podría haber revelado dificultades que se podrían haber encontrado en la segunda etapa (aunque de todas formas se sabía que era posible desarrollar algo de esa índole dado que existían herramientas similares).
 
+## Sobre la Elección de Herramientas
+
+### Herramientas del Backend
+
+Haber elegido Ruby y Sinatra para construir el backend fue una buena decisión. Permitió crear un backend simple, liviano y mantenible en poco tiempo. 
+
+***YA Y?***
+
+### Herramientas del Frontend
+
+En un principio se escogió Backbone para construir el frontend por su simplicidad, popularidad y por ser un framework liviano. Hubo que considerar que el autor no poseía conocimientos con ninguno de estos frameworks inicialmente, por lo que la elección se vio sesgada hacia una herramienta fácil de aprender y con buena documentación y soporte (o sea, una comunidad activa).
+
+Backbone probó ser un framework fácil de dominar y muy flexible. La presencia de varias librerías y extensa documentación en línea permitió dominar la herramienta en poco tiempo y crear una solución mantenible y legible. 
+
 ## Características que Faltaron
 
 ***NO SÉ SI AGREGAR ESTO EN LA MEMORIA***

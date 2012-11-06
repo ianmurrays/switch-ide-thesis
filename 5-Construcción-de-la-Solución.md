@@ -5,7 +5,7 @@ Este capítulo tiene por objetivo detallar todo el proceso del diseño y desarro
   a. Diseño de la solución: básicamente se explicará cómo ambas componentes (frontend y backend) interactuarán entre sí. Además, cómo funcionarán ambas partes en términos de manipulación de archivos y el proyecto completo. Por último, se explicará cómo se diseñó el componente principal de la solución (el editor de interfaces).
   b. Flujo del usuario: acá se explicarán algunos de los casos de uso de la aplicación, como el inicio de sesión, o el ensamblado de los proyectos.
   c. Primera etapa de construcción: el desarrollo de la solución se dividió en dos etapas principalmente. Primero, se desarrolló lo que se denominó una "base" del programa. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
-  d. Primera etapa de construcción: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es el grueso de la solución, se decidió dedicar una etapa completa a él.
+  d. Segunda etapa de construcción: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es el grueso de la solución, se decidió dedicar una etapa completa a él.
 
 ## Diseño de la Solución
 
@@ -39,34 +39,68 @@ La IDE misma se dividirá en tres componentes principales: la barra lateral izqu
 
 Contará además con una barra superior con un menú (al igual que cualquier aplicación de escritorio), pero dado que proveerá simples accesos directos a funciones que se explicarán más adelante no se detallará su diseño ni implementación.
 
-En los siguientes párrafos se pretende explicar qué objetos existirán en el frontend, sus responsabilidades y cómo interactuarán entre ellos. Primero se definirán algunos conceptos necesarios para entender de qué tipos de objetos se estará hablando.
+#### Definición de Objetos
+\label{section:object-definition}
 
-**Modelo:** Representa un objeto en un proyecto, como por ejemplo un archivo, una carpeta o el proyecto mismo. Cada modelo es responsable de persistir su estado de alguna forma (comunicándose con un servidor o almacenando datos en el mismo navegador).
+En esta sección se pretende explicar qué objetos existirán en el frontend, sus responsabilidades y cómo interactuarán entre ellos. Primero se definirán algunos conceptos necesarios para entender de qué tipos de objetos se estará hablando.
 
-**Colección:** Es básicamente una lista de instancias de un tipo de modelo. Por ejemplo, una carpeta podría considerarse una colección de archivos (siendo cada archivo una instancia de un modelo).
+Modelo
+  ~ Representa un objeto en un proyecto, como por ejemplo un archivo, una carpeta o el proyecto mismo. Cada modelo es responsable de persistir su estado de alguna forma (comunicándose con un servidor o almacenando datos en el mismo navegador).
+  
+Colección
+  ~ Es básicamente una lista de instancias de un tipo de modelo. Por ejemplo, una carpeta podría considerarse una colección de archivos (siendo cada archivo una instancia de un modelo).
+  
+Vista
+  ~ Una vista en Backbone es un archivo que se encarga de presentar información al usuario, y además de interactuar con él, por ejemplo ejecutando funciones cuando se haga un click en un botón. Una vista por lo general presenta un modelo (o una colección). Por ejemplo, se puede tener una vista para cada instancia de un archivo, o bien se pueden tener vistas que no presenten a ningún modelo en particular.
+  
+Template
+  ~ Un template es un trozo de HTML que una vista utiliza para generar lo que el usuario ve. Si bien no son enteramente necesarias y una vista podría generar todo lo que necesita con Javascript, hacen la tarea algo más fácil. Contrario a lo que pueda suponerse, el editor visual en el que se trabajará en este documento editará los templates, y no las vistas. 
 
-**Vista:** Una vista en Backbone es un archivo que se encarga de presentar información al usuario, y además de interactuar con él, por ejemplo ejecutando funciones cuando se haga un click en un botón. Una vista por lo general presenta un modelo (o una colección). Por ejemplo, se puede tener una vista para cada instancia de un archivo, o bien se pueden tener vistas que no presenten a ningún modelo en particular.
-
-**Template:** Un template es un trozo de HTML que una vista utiliza para generar lo que el usuario ve. Si bien no son enteramente necesarias y una vista podría generar todo lo que necesita con Javascript, hacen la tarea algo más fácil.
+##### Modelos y Colecciones
 
 A continuación se explicará a grandes rasgos los modelos y colecciones que existirán en el frontend. Se tendrán modelos para los proyectos y los archivos. Cada uno se encargará de comunicarse con el backend para obtener los datos que le sean necesarios o bien para guardar los cambios. 
 
-**El modelo de proyecto** guardará el nombre de éste y una referencia a una colección de los archivos que se encuentren en la raíz de su carpeta. Tendrá como responsabilidades crear archivos y carpetas, ensamblar el proyecto e iniciar el servidor de pruebas. Estas acciones se complementan con llamadas al backend que realizan las tareas mismas.
+El modelo de proyecto
+  ~ Guardará el nombre de éste y una referencia a una colección de los archivos que se encuentren en la raíz de su carpeta. Tendrá como responsabilidades crear archivos y carpetas, ensamblar el proyecto e iniciar el servidor de pruebas. Estas acciones se complementan con llamadas al backend que realizan las tareas mismas.
 
-**El modelo de archivo** se encargará de guardar el nombre y el contenido (en caso de que corresponda) del archivo o carpeta al que representa, además de guardar una referencia al proyecto al que pertenece y . Tendrá como responabilidades pedir su contenido, actualizarlo, renombrar y eliminar el archivo del sistema. Todas estas acciones se complementan además con llamadas al backend.
+El modelo de archivo
+  ~ Se encargará de guardar el nombre y el contenido (en caso de que corresponda) del archivo o carpeta al que representa, además de guardar una referencia al proyecto al que pertenece y . Tendrá como responabilidades pedir su contenido, actualizarlo, renombrar y eliminar el archivo del sistema. Todas estas acciones se complementan además con llamadas al backend.
 
-**La colección de archivos** tendrá como responsabilidad ordenar las listas de archivos una vez que la haya obtenido (además de guardar una referencia a cada modelo de archivo que le corresponda). Ordenar las listas de archios es importante pues el backend arroja una lista de archivos ordenada alfabéticamente, pero, dado que archivos y directorios son considerados de la misma forma en el backend, es necesario ordenar la lista de manera que los directorios queden arriba. Esto facilita encontrar archivos para el usuario.
+La colección de archivos
+  ~ Tendrá como responsabilidad ordenar las listas de archivos una vez que la haya obtenido (además de guardar una referencia a cada modelo de archivo que le corresponda). Ordenar las listas de archios es importante pues el backend arroja una lista de archivos ordenada alfabéticamente, pero, dado que archivos y directorios son considerados de la misma forma en el backend, es necesario ordenar la lista de manera que los directorios queden arriba. Esto facilita encontrar archivos para el usuario.
 
-En lo que respecta a las vistas, se tendrán las siguientes:
+##### Vistas
 
-**Explorador de Archivos:** se colocará en la barra lateral izquierda, y tendrá dos listas de archivos. Una lista de archivos actualmente abiertos y la lista de archivos y directorios en el proyecto. Tendrá entre sus responsabilidades mantener una lista de archivos que se encuentran actualmente abiertos para que el usuario pueda navegar entre ellos.
+Cada una de las siguientes vistas considera un template asociado.
 
-**Archivo:** esta vista representará a un archivo en la vista anterior (exporador de archivos). Mostrará su nombre y un icono que represente si es un directorio, un archivo o una vista editable con el editor que se construirá. Entre sus responsabilidades están abrir los archivos (o sea, abrir el archivo en el editor de código o en el editor de vistas en caso que corresponda), embeber listas de archivos en caso de que se clickee un directorio y permitir al usuario renombrar archivos, mostrando un menú contextual.
+Explorador de Archivos
+  ~ se colocará en la barra lateral izquierda, y tendrá dos listas de archivos. Una lista de archivos actualmente abiertos y la lista de archivos y directorios en el proyecto. Tendrá entre sus responsabilidades mantener una lista de archivos que se encuentran actualmente abiertos para que el usuario pueda navegar entre ellos.
 
-**Editor de Texto:** esta vista contendrá el editor de archivos de texto (editor de código). Sus responsabilidades serán mostrar un editor con resaltado de sintaxis y modificar el modelo de archivo que corresponda para guardar cambios.
+Archivo
+  ~ Esta vista representará a un archivo en la vista anterior (exporador de archivos). Mostrará su nombre y un icono que represente si es un directorio, un archivo o una vista editable con el editor que se construirá. Entre sus responsabilidades están abrir los archivos (o sea, abrir el archivo en el editor de código o en el editor de vistas en caso que corresponda), embeber listas de archivos en caso de que se clickee un directorio y permitir al usuario renombrar archivos, mostrando un menú contextual.
 
-**Editor de Vistas:** esta vista mostrará templates y, en una barra lateral derecha, diferentes componentes para que el usuario los arrastre y agregue. Contará además con un editor de código HTML, en caso de que el usuario quiera editar la vista o realizar cambios que el editor no permita directamente. Tiene las mismas responsabilidades que el editor de texto.
+Editor de Texto
+  ~ Esta vista contendrá el editor de archivos de texto (editor de código). Sus responsabilidades serán mostrar un editor con resaltado de sintaxis y modificar el modelo de archivo que corresponda para guardar cambios.
 
+Editor de Vistas
+  ~ esta vista mostrará templates y, en una barra lateral derecha, diferentes componentes para que el usuario los arrastre y agregue. Contará además con un editor de código HTML, en caso de que el usuario quiera editar la vista o realizar cambios que el editor no permita directamente. Tiene las mismas responsabilidades que el editor de texto.
+  
+#### Diseño del Editor de Templates
+
+El editor de interfaces se construirá de manera que el usuario pueda arrastar componentes como botones o campos de texto directamente en una vista previa del template que esté editando. El contenido de los archivos de templates es simplemente HTML, por lo que es posible presentarlos directamente en la aplicación. Este contenedor o vista previa del template se le llamará "canvas" de ahora en adelante.
+
+El objetivo es que el usuario arrastre elementos hacia el canvas de la misma forma en la que se hace en Xcode o Visual Studio. El sistema debe proveerle retroalimentación visual mostrando el objeto que está arrastrando y además mostrar en qué lugar quedararía el elemento una vez que el usuario lo suelte.
+
+Para implementar este concepto de arrastrar y soltar, se utilizará jQuery UI. esta librería provee, entre otras cosas, métodos para habilitar el arrastrado de elementos en una página. El usuario arrastrará un elemento, y, mediante las llamadas de jQuery, se colocará el elemento en donde el usuario tenga su cursor en el momento, a manera de proveer retroalimentación visual. En cuanto el usuario suelte el elemento, se agregará su correspondiente fragmento de HTML en el template, lo que se reflejará en el canvas en tiempo real.
+
+![Los diferentes elementos de retroalimentación visual que se presentan al arrastrar un componente. \label{figures:drag-editor}](figures/drag-editor.png)
+
+En la Figura \ref{figures:drag-editor} se pueden apreciar los diferentes elementos de retroalimentación al momento de arrastrar un elemento. En el punto 1 se pueden apreciar, primero, un borde amarillo al rededor del elemento en donde "caería" el componente. Además, en el mismo número, puede visualizarse cómo se vería el componente (en este caso un botón) una vez que el usuario lo deje ahí. En el número 2, puede verse el mismo componente, que sigue al cursor mientras el usuario esté arrastrando. Esto le muestra al usuario qué es lo que está arrastrando.
+
+De esta forma, el desarrollador puede ver, por un lado, qué componente estaría agregando al canvas y, por otro lado, cómo quedaría éste una vez que lo agregue.
+
+
+<!--
 ## Flujo del Usuario ("Casos de Uso")
 
 A continuación se detallarán algunos de los casos de uso que tiene la aplicación.
@@ -76,14 +110,78 @@ A continuación se detallarán algunos de los casos de uso que tiene la aplicaci
 ### Caso de Uso: El usuario crea un proyecto nuevo
 
 ### Caso de Uso: El usuario abre un proyecto existente
-
+-->
 
 
 ## Primera Etapa de Construcción
 
 ### Creación del Entorno de Trabajo
 
+En esta sección se detallarán cómo se crearon y estructuraron los dos entornos de trabajo, tanto para el backend como para el frontend. 
+
+Ambos entornos de trabajo se crearon en carpetas independientes (dada su naturaleza) y se inicializaron repositorios Git en cada una, a manera de mantener un control de versiones en cada una.
+
+Para el control de versiones no se utilizó ninguna estrategia en especial. Dado que sólo el autor estará desarrollando, no valdría la pena implementar alguna estrategia de ramas o algo parecido para el control de versiones. Simplemente se utilizó la rama principal (`master` en Git), y se fueron creando "commits" cuando se considerara necesario.
+
+#### Entorno de Trabajo para el Backend
+
+El backend utilizará Ruby con Sinatra. Sinatra se diferencia de, por ejemplo, Rails, en que es un framework mucho más simple. Por esto, es que no posee utilidades para crear directorios de trabajo. La idea detrás de Sinatra es crear todo en un sólo archivo. Si bien esto es posible, e incluso aconsejable para algunas aplicaciones, no lo es para ésta, en donde se tendrán diferentes modelos y controladores. Por lo tanto se definió la siguiente estructura para el backend:
+
+- `api`
+    - `v1`
+        - `config`: contiene diferentes archivos de configuración
+        - `controllers`: los diferentes controladores
+        - `models`: los modelos de usuario y proyecto 
+        - `app.rb`: este archivo es la base de la aplicación Sinatra, pues nicializa ciertas configuraciones y contiene métodos compartidos por los controladores
+        - `boot.rb`: este archivo es cargado inicialmente y se encarga de incluir las diferentes librerías y archivos para incializar el servidor
+- `projects`: será el contenedor de los diferentes proyectos que crearán los usuarios
+- `public`: esta carpeta sirve archivos estáticos directamente, como imágenes
+- `Gemfile`: archivo utilizado por Bundler (una librería de Ruby) para definir qué librerías y en qué versiones utilizará el backend
+- `config.ru`: archivo utilizado para levantar el servidor
+
+Se decidió estructurar el backend en carpetas de versiones. La idea detrás de esto es poder dividir cada versión de la API de manera de no perder compatibilidad con posibles clientes que estén basados en una versión de la API. Por ejemplo, de llegar a crearse un cliente para tablets, cada cliente estaría atado a una versión específica. Si se cambiara algún método (o se descontinuara), el cliente automáticamente fallaría. En cambio, teniendo diferentes versiones, se puede mantener esta compatibilidad.
+
+Se creó además una carpeta llamada `projects`. Esta carpeta (que no es accesible directamente), guarda cada uno de los proyectos de cada usuario. Cada vez que se inicialice uno nuevo, se creará una subcarpeta en este directorio con la estructura determinada.
+
+El archivo `Gemfile` es un archivo que utiliza la librería Bundler^[citar blablabla]. Esta utilidad permite especificar librerías externas que se quieren incluir en un proyecto (en este caso el backend) y especificar sus versiones. Por ejemplo, un extracto de un archivo Gemfile podría verse así:
+
+```ruby
+gem 'sinatra', '1.3.3' # Especifica que se utilizará la versión 1.3.3
+
+gem 'activerecord', '~> 3.2' # Especifica que se utilizarán 
+                             # versiones 3.2.X
+
+gem 'haml' # Especifica que se utilizará la última versión
+```
+
+La gran utilidad de esta herramienta es que, al momento de ejecutar en la consola `bundle install`, las versiones especificadas son descargadas y se crea un archivo llamado `Gemfile.lock` que guarda las versiones que están siendo utilizadas. De esta forma, cuando otro desarrollador descargue el repositorio y ejecute nuevamente `bundle install` para instalar las dependencias, se descargarán exactamente esas versiones y ambos desarrolladores tendrán el mismo entorno de desarrollo.
+
+Finalmente, el archivo `config.ru` especifica cómo debe levantarse el servidor. Este archivo detalla diferentes rutas que deben ser "montadas" y a las cuales el servidor debe responder de diferentes maneras. En este caso, se tendrán dos rutas (incialmente). Una, en la que se montará el backend mismo, o sea, `/api/v1`, y la otra, en la que se montará un servidor estático que sirva los archivos en la carpeta `public`.
+
+#### Entorno de Trabajo para el Frontend
+
 De la misma forma en que Switch utilizará Brunch para crear y administrar proyectos, se decidió utilizar la misma solución para construir la IDE. Brunch utiliza un sistema de esqueletos ("skeletons", en inglés), los cuales utiliza para crear la estructura de los proyectos. Existe una gran variedad, utilizando diferentes lenguajes y frameworks. Se encontró uno que utiliza Backbone y CoffeeScript y se utilizó para crear la estructura de archivos inicial.
+
+De no existir esta estructura, habría que escribir todo dentro de un sólo archivo, lo que para aplicaciones muy pequeñas puede ser práctico, pero no lo es en este caso. La estructura consiste en la siguiente:
+
+- `app`
+    + `assets`: imágenes y el archivo HTML principal de la aplicación
+    + `models`: los modelos y colecciones
+    + `routers`: definen los diferentes estados de la aplicación e inicializan lo necesario para funcionar en cada uno
+    + `styles`: archivos de estilo (CSS) modularizados para cada sección de la aplicación
+    + `views`: las vistas (o controladores)
+        * `templates`: los archivos con HTML de cada vista
+- `vendor`: librerías (Javascript o CSS) externas, como jQuery, Bootstrap, etc.
+
+Existen otras carpetas que acá no se mencionan dado que no son relevantes a la aplicación. La funcionalidad de cada uno de estos tipos de archivos se explicaron en la Sección \ref{section:object-definition}.
+
+Para crear el entorno de trabajo, simplemente se ejecuta el siguiente comando:
+
+```sh
+brunch new -s git://github.com/meleyal/brunch-crumbs.git
+```
+
+Este comando utiliza el esqueleto presente en [github.com/meleyal/brunch-crumbs](https://github.com/meleyal/brunch-crumbs) para crear un directorio con la estructura ya mencionada.
 
 ### Prototipado de la Interfaz
 
@@ -103,6 +201,7 @@ Otras vistas corresponden a el selector de proyectos, que se creó usando una ve
 
 Para poder crear las funcionalidades necesarias en el frontend, se decidió crear primero los servicios en el Backend. Éstos son los siguientes:
 
+  - Autentificación de Usuarios
   - Creación de proyectos
   - Obtención de una lista de proyectos
   - Obtención de lista de archivos
@@ -113,18 +212,40 @@ Se consideraron dos acercamientos para la creación del backend. Primero, crear 
 
 La primera alternativa se descartó dado que agregaba un cierto grado de complejidad sin agregar ningún beneficio. La segunda alternativa es más simple, pues considerando que los archivos y carpetas son literalmente archivos y carpetas en disco, no es necesario agregar una capa de abstracción dado que no simplificaría su manejo. Es por esto que cada proyecto tiene un modelo (y su información sí se guarda en la base de datos), y es posible manipular archivos y carpetas en el proyecto utilizando métodos en cada instancia (junto con la ruta al archivo o directorio).
 
-Ahora, si bien sólo existirá un modelo para el proyecto, en términos de la interfaz que proveerá el backend, si se reflejará una diferencia entre archivos y proyectos. Específicamente, se tendrán las siguientes rutas para realizar diferentes acciones:
+Ahora, si bien sólo existirá un modelo para el proyecto, en términos de la interfaz que proveerá el backend, si se reflejará una diferencia entre archivos y proyectos. Por ejemplo, las siguientes son algunas de las rutas para realizar diferentes acciones:
 
   - `GET /projects`: entregará una lista de proyectos existentes
   - `GET /projects/:id/files`: entregará una lista de archivos en la raíz del proyecto
   - `GET /projects/:id/files?path=/ruta/al/directorio`: lista los archivos en el directorio especificado
-  - ***etc ...***
 
 Aún cuando proyectos y archivos se manejarán en el mismo modelo, se dividirán en dos controladores, a manera de encapsular en cierta medida su funcionalidad.
 
-La creación de toda la funcionalidad ya descrita requirió utilizar varias funciones de manipulación de archivos y ejecución de comando en Ruby.
+#### Autentificación de Usuarios
 
-***EXPLICAR ACÁ ALGUNAS IMPLEMENTACIONES***
+Para autentificar usuarios se utilizó el sistema OAuth de GitHub. OAuth es un protocolo de autentificación y autorización que utiliza un proveedor. El proveedor en este caso es GitHub. La ventaja de este protocolo es que permite registrar y autentificar usuarios sin manejar un sistema de usuarios interno, quitando la necesidad de almacenar contraseñas y requerir al usuario registrarse en el sitio.
+
+Funciona de la siguiente manera:
+
+1. El consumidor (o sea, el backend en este caso) pide un token inicial al proveedor (en este caso GitHub).
+2. GitHub genera este token único y lo devuelve.
+3. Con este token, se genera una URL a la que el usuario es redireccionado.
+4. Esta URL pertenece al proveedor, y es acá donde el usuario se autentifica contra el proveedor (no contra el consumidor). Al usuario se le da la opción de autorizar o denegar el acceso.
+5. Si el usuario autoriza el acceso, es redireccionado al consumidor.
+6. El consumidor ahora puede hacer una nueva petición al proveedor utilizando el mismo token inicial.
+7. El proveedor, sabiendo que el usuario autorizó el acceso, entrega un *token de acceso*.
+
+Este token de acceso permite al consumidor acceder a toda la información que el cliente haya autorizado. En el caso de este trabajo, sólo se necesitan el nombre y el correo electrónico. En la Figura \ref{figures:oauth} (en inglés) se puede apreciar el protocolo de mejor manera.^[poner referencia! http://oauth.googlecode.com/]
+
+![Fragmento del diagrama de flujo de autentificación de OAuth \label{figures:oauth}](figures/oauth-diagram.png)
+
+Como puede apreciarse, implementar el protocolo OAuth manualmente resulta algo tedioso. Son bastantes los casos que deben considerarse y atenerse al protocolo podría tomar tiempo. Afortunadamente, existen diferentes librerías que permiten implementar este sistema de autentificación en muy poco tiempo. La librería Omniauth^[url!] provee mecanismos de autentificación mediante OAuth y OpenID para diferentes proveedores (desde GitHub hasta Google). Junto con la librería omniauth-github, es posible implementar autentificación en muy poco tiempo.
+
+El primer paso es crear una "aplicación" en el portal de desarrolladores de GitHub. Con esto, el proveedor entrega dos identificadores que permiten inicializar comunicaciones con ellos y autentificar a usuarios. En la Figura \ref{figures:oauth-create} se puede ver el proceso de creación de aplicaciones, y en la Figura \ref{figures:oauth-app} pueden verse ambos identificadores. Es simplemente entregar un nombre, una URL principal (que permite a GitHub asegurarse que las peticiones vienen del servidor que corresponde) y una URL a la cual redirigir al usuario (que puede sobreescribirse en cada petición).
+
+![Proceso de creado de aplicaciones en GitHub \label{figures:oauth-create}](figures/oauth-create.png)
+
+![Acá pueden apreciarse ambos identificadores que entrega GitHub \label{figures:oauth-app}](figures/oauth-app.png)
+
 
 ### Agregado de Funcionalidad al Prototipo del Frontend
 

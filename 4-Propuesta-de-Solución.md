@@ -5,18 +5,19 @@ Para solucionar el problema identificado, se propone una herramienta web, basada
 - Dar una estructura a las aplicaciones que se desarrollen con Backbone
 - Facilitar la creación de vistas mediante un editor que permita arrastrar los diferentes componentes y ahorrar el tiempo gastado en ello
 - Implementar atajos de teclado de manera similar a cómo lo haría una IDE de escritorio
+- Permitir ensamblar y probar la aplicación de manera similar a cómo lo haría un programa nativo
 
 La herramienta no puede funcionar sólo de lado de cliente (exclusivamente en el navegador), dado que algunas funciones deben ser ejecutadas en el servidor, como por ejemplo la compilación de los archivos Javascript y levantar una instancia de un servidor para probar lo que el usuario esté desarrollando. Por esto, es necesario implementar este proyecto en dos partes distintas, pero dependientes.
 
 <!--Salto de linea aca??-->
 
-Por un lado, se tiene el servidor, que tendrá la tarea de manipular los archivos de cada proyecto que el usuario cree y desarrolle. Además, tendrá la tarea de ejecutar ciertos comandos necesarios para la creación y prueba de los proyectos, que simplemente no es posible ejecutar en el navegador. El hecho de que exista un "backend" como se le llamará de ahora en adelante, permite además dar lugar a futuras características imposibles de llevar a cabo, como por ejemplo soporte para repositorios Git, que deben ser manejados en el servidor exclusivamente.
+Por un lado, se tiene el servidor, que tendrá la tarea de manipular los archivos de cada proyecto que el usuario cree y desarrolle. Además, tendrá la tarea de ejecutar ciertos comandos necesarios para la creación y prueba de los proyectos, que simplemente no es posible ejecutar en el navegador. El hecho de que exista un "backend" (como se le llamará de ahora en adelante), permite además dar lugar a futuras características imposibles de llevar a cabo de otra forma, como por ejemplo soporte para repositorios Git, que deben ser manejados en el servidor exclusivamente.
 
 Por otro lado, está el cliente. El cliente es básicamente el "frontend" (como se le llamará de ahora en adelante). Es la interfaz gráfica y es lo que interactúa con el usuario, en el navegador. La mayor parte del trabajo recaerá en esta parte, dado que es lo que el usuario ve y utiliza para trabajar. Además, es la parte del proyecto que contendrá el editor de vistas, lo que requerirá un esfuerzo no mínimo para funcionar.
 
 ## Elección de Herramientas para el Backend
 
-Para desarrollar el backend se escogió el lenguaje de programación *Ruby*. Las razones para la elección de este lenguaje son varias: la familiaridad que tiene el autor con éste; su simplicidad para desarrollar tareas relativamente complejas en otros lenguajes; la infinidad de librerías disponibles para facilitar diferentes tareas (como por ejemplo *Grit*, una librería para manejar repositorios Git directo desde Ruby).
+Para desarrollar el backend se escogió el lenguaje de programación *Ruby*. Las razones para la elección de este lenguaje son varias: la familiaridad que tiene el autor con éste; su simplicidad para desarrollar tareas relativamente complejas en otros lenguajes; la infinidad de librerías disponibles para facilitar diferentes tareas (como por ejemplo *Grit*, una librería para manejar repositorios Git directo desde Ruby)^[cita?].
 
 Para desarrollar el backend no se utilizará Ruby puro. Lo que se quiere desarrollar en el lado del backend es básicamente una API (Application Programming Interface), que el frontend utilizará parar funcionar correctamente. Existen varias formas de programar APIs en Ruby, donde las más populares son Ruby on Rails y Sinatra. 
 

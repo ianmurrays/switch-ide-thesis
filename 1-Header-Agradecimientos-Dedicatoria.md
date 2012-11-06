@@ -9,7 +9,7 @@
 \topskip0pt
 \vspace*{\fill}
 
-\textit{A todos los que hicieron esto posible.}
+\textit{A los que creyeron en mí, a los que me apoyaron,\\a todos los que hicieron esto posible.}
 
 \vspace*{\fill}
 \end{flushright}
