@@ -220,6 +220,34 @@ Ahora, si bien sólo existirá un modelo para el proyecto, en términos de la in
 
 Aún cuando proyectos y archivos se manejarán en el mismo modelo, se dividirán en dos controladores, a manera de encapsular en cierta medida su funcionalidad.
 
+En las subsecciones siguientes se discutirán algunas de las implementaciones de funcionalidades en el backend. Sin embargo no se discutirán los métodos que se publican y son accesibles a través de la API. Éstos últimos simplemente arrojan respuestas con objetos JSON como el que sigue para comunicarse con el frontend, por lo que no se considera necesario entrar en mucho detalle.
+
+```json
+[
+    {
+        "name": "app",
+        "parent": "",
+        "type": "directory"
+    },
+    {
+        "name": "Cakefile",
+        "parent": "",
+        "type": "file"
+    },
+    {
+        "name": "conf",
+        "parent": "",
+        "type": "directory"
+    },
+    {
+        "name": "config.coffee",
+        "parent": "",
+        "type": "file"
+    }
+    // etc...
+]
+```
+
 #### Autentificación de Usuarios
 
 Para autentificar usuarios se utilizó el sistema OAuth de GitHub. OAuth es un protocolo de autentificación y autorización que utiliza un proveedor. El proveedor en este caso es GitHub. La ventaja de este protocolo es que permite registrar y autentificar usuarios sin manejar un sistema de usuarios interno, quitando la necesidad de almacenar contraseñas y requerir al usuario registrarse en el sitio.
@@ -245,6 +273,116 @@ El primer paso es crear una "aplicación" en el portal de desarrolladores de Git
 ![Proceso de creado de aplicaciones en GitHub \label{figures:oauth-create}](figures/oauth-create.png)
 
 ![Acá pueden apreciarse ambos identificadores que entrega GitHub \label{figures:oauth-app}](figures/oauth-app.png)
+
+#### Creación de Proyectos
+
+La creación de un proyecto nuevo es relativamente simple. Consiste en crear un nuevo proyecto en la base de datos con el nombre que provee el usuario, y luego crear el proyecto mismo utilizando Brunch.
+
+Al crear un proyecto nuevo, el modelo guarda en la base de datos una nueva entrada que está asociada al usuario que hace la llamada a la API. Guarda un nombre para el proyecto, la ruta en la que fue guardado el esqueleto y un puerto único. Antes de guardar la entrada en la base de datos, un "callback" es gatillado en el mismo modelo (en Ruby) que ejecuta el comando que crea la carpeta para el proyecto, como se detalla a continuación:
+
+```ruby
+def create_project
+  # Create a random path and the project
+  self.path = "#{self.name}-#{SecureRandom.hex(10)}"
+  system "brunch new #{self.full_path} \
+  		  -s git://github.com/ianmurrays/brunch-crumbs.git"
+end
+```
+
+Se crea un sufijo aleatorio para evitar colisiones con proyectos que tengan el mismo nombre, y se llama a un comando de sistema para crear el esqueleto. Esta implementación no es perfecta, dado que podría darse el caso de que `SecureRandom.hex(10)` arroje una cadena aleatoria idéntica a alguna anterior. Para efectos del desarrollo del presente trabajo, se decidió no darle demasiada importancia a este defecto, dado que las probabilidades de que ello ocurra son demasiado bajas.
+
+Después de que finalice este comando, se llama a un segundo "callback" que crea el número de puerto único para esta aplicación:
+
+```ruby
+def randomize_port
+  begin
+    self.port = 8000 + rand(2000)
+  end until Project.where(port: self.port).count == 0
+end
+```
+
+Básicamente asigna un puerto entre 8000 y 10000 aleatorio (y único) a cada proyecto. De esta forma, si se están editando dos proyectos simultáneamente, pueden levantarse dos instancias para hacer pruebas sin colisionar. Esta implementación, si bien es suficiente para el desarrollo de la herramienta y para este trabajo, no sería una implementación ideal en producción, dado que alguno de esos puertos podría estar siendo ocupado por algún servicio en el sistema. En una futura implementación podría agregarse algún mecanismo que verifique la disponibilidad del puerto al momento de asignarlo, o bien, verifique y asigne puertos cada vez que se ensamble y corra el proyecto.
+
+#### Manipulación de Archivos
+
+La manipulación de archivos se hace directamente sobre ellos usando librerías estándar de Ruby. Sólo se discutirán algunas de las implementaciones presentes en el backend.
+
+Para listar los archivos presentes en una determinada ruta, se utilizó la siguiente implementación:
+
+```ruby
+def files_in(folder = "")
+  # Remove leading and trailing slashes
+  folder.gsub! /^\//, ""
+  folder.gsub! /\/$/, ""
+
+  files = Dir["#{self.full_path}/#{folder}/*"].collect do |entry|
+    next if %w{server.js node_modules}.include? File.basename(entry)
+    self.file_to_hash entry, folder
+  end
+end
+```
+
+El método lista todos los archivos presentes en la ruta especificada. De no especificarse, lista los archivos en la raíz del proyecto. Primero se eliminan las barras (`/`) al principio y final de la ruta que se especifique, y luego se recorre el directorio usando la clase Dir^[http://ruby-doc.org/core-1.9.3/Dir.html]. La llamada a `Dir["/ruta/a/directorio"]` retorna un array que se recorre utilizando `collect`. El método `collect` en los arreglos genera un nuevo arreglo con los elementos que retorne el bloque que se le pase. `collect` pasa cada elemento del arreglo original al bloque como argumento para su manipulación. Por ejemplo, si el siguiente fragmento de código retorna un nuevo arreglo con sus elementos elevados al cuadrado:
+
+```ruby
+[1,2,3,4,5].collect do |num|
+  num * num
+end
+
+# => [1,4,9,16,25]
+```
+
+Por lo tanto, la variable `files` en la implementación de `files_in` contendrá la representación en un Hash^[http://www.ruby-doc.org/core-1.9.3/Hash.html] (básicamente un diccionario) de cada archivo (o directorio). Además, se excluirán el directorio `node_modules` y el archivo `server.js` del listado, dado que son un directorio y un archivo que no deben ser manipulados por el desarrollador.
+
+La implementación del método `file_to_hash` es relativamente simple, y genera un diccionario con el nombre, padre y tipo de archivo para la ruta que se le pase como parámetro:
+
+```ruby
+def file_to_hash(file, folder)
+  {
+    :name => File.basename(file),
+    :parent => folder,
+    :type => if File.directory?(file)
+      :directory
+    else
+      :file
+    end
+  }
+end
+```
+
+Para obtener y actualizar el contenido de archivos se utilizó una implementación relativamente simple:
+
+```ruby
+def file_content(path)
+  if FileTest.exists? self.full_path(path) \
+     and ! File.directory? self.full_path(path)
+    {
+      :content => File.read(self.full_path(path))
+    }
+  end
+end
+```
+
+Básicamente, se verifica que el archivo indicado exista y que no sea un directorio, y se retorna un Hash indicando el contenido del archivo. Se decidió retornar un Hash pues facilita su lectura en el frontend, retornando un objeto JSON en vez del contenido directamente.
+
+Para la escritura de archivos se utilizó una implementación similar:
+
+```ruby
+def update_file(path, content)
+  if FileTest.exists? self.full_path(path) \
+     and ! File.directory? self.full_path(path)
+    File.open(self.full_path(path), 'w') do |file|
+      file.write content
+    end
+  end
+end
+```
+
+Se realiza la misma verificación que al momento de obtener el contenido. Si el archivo existe y no es una carpeta, se reemplaza todo el contenido directamente.
+
+#### Ensamblado y Servidor de Pruebas
+
+
 
 
 ### Agregado de Funcionalidad al Prototipo del Frontend

@@ -47,6 +47,8 @@ Agregar esta funcionalidad requeriría de interfaces que permitan al desarrollad
 
 Otra característica importante que se discutió antes es la de no necesitar ensamblar el proyecto constantemente. Brunch (el ensamblador que se utilizó en este trabajo) permite levantar un proceso que observa cambios en los archivos y ensambla el proyecto bajo demanda. Eso hace que el proceso de programar y probar los cambios sea mucho más continuo y simple. ***Tal vez hablar más de esto?***
 
+Una adición que podría ser de importancia en proyectos con archivos grandes sería la de no enviar el archivo completo cada vez que se guarden cambios. Este es el comportamiento actual y, si bien no se nota para archivos livianos, sí se sentiría al momento de guardar archivos de 100 o más líneas de código. Una posible solución sería enviar parches, es decir, guardar en el frontend el estado en el que se encuentra el archivo en el servidor, y, al momento de guardar cambios, enviar sólo las diferencias de manera de minimizar la cantidad de información enviada. De esta forma, si se tuviera un archivo con 200 líneas de código y sólo se quisiera agregar 2 líneas con comentarios, se ahorraría un 99% de cantidad de datos que se transfieran.
+
 Un cambio que no sería menor, y que está relacionado con la edición de vistas, es la de cambiar el framework que se utiliza para el desarrollo por una conocida como Knockback^[referencia]. Knockback es una combinación de dos frameworks: Backbone (la que se utiliza actualmente) y Knockout. Knockout es conocido por ofrecer "bindings", es decir, permite agregar atributos HTML a las vistas de manera que se actualicen automáticamente, sin necesidad de escribir código dentro de ellas. Como por ejemplo:
 
 ```html
