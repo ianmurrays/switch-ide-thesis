@@ -30,7 +30,7 @@ def typeset(output = "switch-ide-thesis.pdf")
   # Join all the markdown files first
   markdown = Dir["#$root/*.md"].sort.map do |file|
     File.read(file)
-  end.join("\n\n\\newpage\n\n") # Join each file with a "newpage".
+  end.join("\n\n\\clearpage\n\\newpage\n\n") # Join each file with a "newpage".
 
   # Run pandoc on the final markdown
   arguments = ["pandoc", 

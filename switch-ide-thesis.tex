@@ -49,6 +49,8 @@
     {\setlength{\labelwidth}{4em}}
 }\makeatother
 \usepackage{enumerate}
+\usepackage{ctable}
+\usepackage{float} % provides the H option for float placement
 \usepackage{graphicx}
 % We will generate all images so they have a width \maxwidth. This means
 % that they will get their normal width if they fit onto the page, but
@@ -78,6 +80,27 @@
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 
+\makeatletter
+\renewcommand\paragraph{%
+   \@startsection{paragraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.5\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\makeatother
+
+\makeatletter
+\renewcommand\subparagraph{%
+   \@startsection{subparagraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.5\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\makeatother
+
+\setcounter{tocdepth}{5} %to make it appears in TOC
+\setcounter{secnumdepth}{5} %to make it numbered
+
+\linespread{1.1}
+
 \title{Switch IDE}
 \author{\textbf{Borrador} --- Universidad Técnica Federico Santa María}
 \date{Ian Murray Schlegel}
@@ -95,7 +118,7 @@
 \topskip0pt
 \vspace*{\fill}
 
-\textit{A todos los que hicieron esto posible.}
+\textit{A los que creyeron en mí, a los que me apoyaron,\\a todos los que hicieron esto posible.}
 
 \vspace*{\fill}
 \end{flushright}
@@ -103,6 +126,7 @@
 \newpage
 \hypersetup{linkcolor=black} \tableofcontents
 
+\clearpage
 \newpage
 
 \section{Introducción}
@@ -110,27 +134,27 @@
 \pagenumbering{arabic}
 
 En el contexto del desarrollo de aplicaciones web, existen dos grandes
-``corrientes''. Por un lado, es posible (y se utiliza muchísimo)
+``corrientes''. Por una parte, es posible (y se utiliza muchísimo)
 desarrollar aplicaciones completamente de lado de servidor. Esto
 significa que la aplicación procesa todos los datos y genera todo lo que
-el usuario ve en el servidor. Esta forma de desarrollar ha sido así
-durante muchísimos años y sigue siendo una forma muy utilizada. Por otro
-lado, últimamente, con el crecimiento de la comunidad de Javascript, y
+el usuario ve de forma remota. Esta forma de desarrollar ha sido así
+durante muchísimos años y sigue siendo una forma muy utilizada. Por otra
+parte, últimamente, con el crecimiento de la comunidad de Javascript, y
 la constante mejora en rendimiento de los navegadores modernos, se ha
 popularizado la idea de llevar gran parte de la lógica de negocio y el
 procesamiento de datos al cliente. Los navegadores modernos tienen cada
 vez más capacidad de ejecutar procesos rápida y eficientemente, lo que
-tiene muchísimas ventajas: se aliviana la carga en los servidores, lo
-que permite poder soportar a muchos más usuarios simultáneos; las
-aplicaciones se desempeñan mucho mejor, dado que se disminuye el retardo
-que hay en transmitir datos entre el cliente y el servidor. Esto último
-es muy importante al momento de crear aplicaciones web. Si bien toda
-página web, sin importar su naturaleza, debería ser lo más rápida y
-responsiva posible, las aplicaciones web deben serlo por sobre todo. Al
-fin y al cabo, están intentando imitar el comportamiento de aplicaciones
-nativas, pero a su vez alivianando la carga a la que se somete un
-desarrollador al momento de crear aplicaciones compatibles con una
-infinidad de dispositivos y sistemas operativos distintos.
+tiene una gran cantidad de ventajas: se aliviana la carga en los
+servidores, lo que permite poder soportar a muchos más usuarios
+simultáneos, y las aplicaciones se desempeñan mucho mejor, dado que se
+disminuye el retardo que hay en transmitir datos entre el cliente y el
+servidor. Esto último es muy importante al momento de crear aplicaciones
+web. Si bien toda página web, sin importar su naturaleza, debería ser lo
+más rápida y responsiva posible, las aplicaciones web deben serlo por
+sobre todo. Al fin y al cabo, están intentando imitar el comportamiento
+de aplicaciones nativas, pero a su vez alivianando la carga a la que se
+somete un desarrollador al momento de crear aplicaciones compatibles con
+una infinidad de dispositivos y sistemas operativos distintos.
 
 Desarrollar aplicaciones web versus desarrollar aplicaciones nativas
 (que son ejecutables directamente en el computador, sin necesidad de un
@@ -149,7 +173,7 @@ Ahora bien, desarrollar aplicaciones web también tiene sus desventajas.
 Es cosa de ver Xcode o Visual Studio, donde ambas herramientas son un
 entorno completamente integrado para desarrollar aplicaciones. Desde
 escribir código a crear formularios y diferentes tipos de vistas, ambas
-herramientas y herramientas similares entregan una experiencia casi
+herramientas (y otras similares) entregan una experiencia casi
 inigualable al desarrollador. Al desarrollar aplicaciones y sitios web
 en general, no es posible encontrar herramientas que se asemejen lo
 suficiente a las mencionadas (y que sean de código abierto) como para
@@ -161,7 +185,7 @@ tareas tan necesarias como codificar la interfaz de una aplicación.
 Es este último aspecto el que se considera como un problema actualmente
 en el mundo del desarrollo web. Si bien no es difícil codificar
 interfaces de usuario al momento de crear aplicaciones web, es una tarea
-que consume mucho tiempo y para la cual si existen herramientas muy
+que consume mucho tiempo y para la cual sí existen herramientas muy
 buenas en el mundo del desarrollo de aplicaciones nativas (como Xcode o
 Visual Studio). Es por esto que en este trabajo se propone la creación
 de un entorno de desarrollo integrado que permita la creación de
@@ -188,20 +212,23 @@ Este trabajo se estructurará como sigue:
   \textbf{NO SE AUN} Se mostrarán casos de uso de la aplicación creada
   de manera de mostrar su funcionamiento
 \item
-  Se analizarán los resultados utiliando las métricas previamente
-  propuestas.
+  Se analizarán los resultados utilizando las métricas\footnote{Definí
+    estas métricas??} previamente propuestas.
 \item
   Finalmente se presentarán conclusiones del trabajo junto con ideas
   para posible trabajo futuro.
 \end{itemize}
 
+\clearpage
 \newpage
 
 \section{Estado del Arte}
 
+\label{section:state-of-the-art}
+
 La metodología para el desarrollo de aplicaciones web está cambiando. Ha
 pasado de estar enfocada casi completamente de desarrollar de lado de
-servidor a desarrollar parcial o totalmente de lado de cliente.
+servidor, a desarrollar parcial o totalmente de lado de cliente.
 Frameworks como Backbone han revolucionado lo que se piensa sobre
 desarrollar aplicaciones completamente usando Javascript, y la aparición
 de muchísimos frameworks nuevos en este joven sub-mundo de aplicaciones
@@ -214,12 +241,12 @@ diferentes, incluso utilizando paradigmas de desarrollo distintos (ya
 sea MVC {[}1{]}, MVP {[}2{]} u otro de los que normalmente se utilizan).
 
 En este capítulo, se revisarán las diferentes herramientas que existen
-el mundo del desarrollo de aplicaciones Javascript, además de programas
-y utilidades que funcionan de manera similar a lo que se quiere lograr
-con Switch IDE y que están actualmente en el mercado. Se revisarán
-primero diferentes frameworks disponibles hoy en día, analizando sus
-ventajas y desventajas, para luego mostrar herramientas que facilitan el
-uso de frameworks y otro tipo de soluciones online.
+en el mundo del desarrollo de aplicaciones Javascript, además de
+programas y utilidades que funcionan de manera similar a lo que se
+quiere lograr con Switch IDE y que están actualmente en el mercado. Se
+revisarán primero diferentes frameworks disponibles hoy en día,
+analizando sus ventajas y desventajas, para luego mostrar herramientas
+que facilitan el uso de frameworks y otro tipo de soluciones online.
 
 \subsection{Frameworks Actuales}
 
@@ -522,6 +549,7 @@ servidor, sino que permite crear simples bases de datos; y tercero, no
 es una herramienta gratuita o de código abierto, lo que hace que lo
 creado con ella tenga ciertas limitaciones en cuanto a licencias.
 
+\clearpage
 \newpage
 
 \section{Propuesta de Solución}
@@ -541,6 +569,9 @@ características serían:
 \item
   Implementar atajos de teclado de manera similar a cómo lo haría una
   IDE de escritorio
+\item
+  Permitir ensamblar y probar la aplicación de manera similar a cómo lo
+  haría un programa nativo
 \end{itemize}
 
 La herramienta no puede funcionar sólo de lado de cliente
@@ -554,10 +585,10 @@ Por un lado, se tiene el servidor, que tendrá la tarea de manipular los
 archivos de cada proyecto que el usuario cree y desarrolle. Además,
 tendrá la tarea de ejecutar ciertos comandos necesarios para la creación
 y prueba de los proyectos, que simplemente no es posible ejecutar en el
-navegador. El hecho de que exista un ``backend'' como se le llamará de
-ahora en adelante, permite además dar lugar a futuras características
-imposibles de llevar a cabo, como por ejemplo soporte para repositorios
-Git, que deben ser manejados en el servidor exclusivamente.
+navegador. El hecho de que exista un ``backend'' (como se le llamará de
+ahora en adelante), permite además dar lugar a futuras características
+imposibles de llevar a cabo de otra forma, como por ejemplo soporte para
+repositorios Git, que deben ser manejados en el servidor exclusivamente.
 
 Por otro lado, está el cliente. El cliente es básicamente el
 ``frontend'' (como se le llamará de ahora en adelante). Es la interfaz
@@ -575,7 +606,7 @@ la familiaridad que tiene el autor con éste; su simplicidad para
 desarrollar tareas relativamente complejas en otros lenguajes; la
 infinidad de librerías disponibles para facilitar diferentes tareas
 (como por ejemplo \emph{Grit}, una librería para manejar repositorios
-Git directo desde Ruby).
+Git directo desde Ruby)\footnote{Cita?}.
 
 Para desarrollar el backend no se utilizará Ruby puro. Lo que se quiere
 desarrollar en el lado del backend es básicamente una API (Application
@@ -598,6 +629,33 @@ liviano. Inicia más rápido y, en general, se desempeña mejor que su
 contraparte. Tiene la desventaja de no poseer tantas facilidades para
 desarrollar sitios complejos y grandes, pero dado que el backend de este
 proyecto no requerirá tanto trabajo, es la opción ideal.
+
+El backend requerirá una base de datos para poder guardar información de
+los usuarios y proyectos. Se pensó en dos alternativas: MySQL y MongoDB.
+La primera es una base de datos convencional, poderosa y muy popular. La
+segunda es una base de datos de la familia conocida como ``NoSQL'', es
+decir, no es una base de datos tradicional. Permite almacenar
+``documentos'', o, más específicamente, objetos del estilo JSON. Además,
+no acepta consultas SQL, si no que las consultas se realizan utilizando
+métodos directamente en la base de datos.
+
+Las ventajas que tiene MongoDB sobre MySQL son varias. Por un lado, es
+un sistema de bases de datos rápido y liviano, soporta escalamiento
+horizontal fácilmente, e incluso permite almacenar archivos en él usando
+una tecnología llamada GridFS\footnote{Http://www.mongodb.org/display/DOCS/GridFS.}.
+
+En términos de uso, existen librerías en Ruby para interactuar con ambas
+bases de datos. Para MySQL, es posible usar ActiveRecord\footnote{Link!},
+un ORM\footnote{Object Relational Mapper.} muy popular y muy poderoso
+que permite hacer consultas a la base de datos sin utilizar SQL. Para
+MongoDB, existe Mongoid\footnote{Link!}, un ODM\footnote{Object Document
+  Mapper.} que provee una interfaz muy similar a ActiveRecord.
+
+Dadas las ventajas que provee MongoDB y la posibilidad de utilizar un
+ODM muy similar a ActiveRecord, se decidió utilizar MongoDB.
+Afortunadamente, en caso de querer cambiar el sistema de base de datos,
+no se requerirían muchos cambios dadas las similitudes de las librerías
+utilizadas.
 
 \subsection{Elección de Herramientas para el Frontend}
 
@@ -659,13 +717,14 @@ Bootstrap para crear el frontend, sino que también se utilizará para el
 diseñador de interfaces, dado que tiene todas las ventajas descritas
 anteriormente.
 
+\clearpage
 \newpage
 
 \section{Construcción de la Solución}
 
 Este capítulo tiene por objetivo detallar todo el proceso del diseño y
 desarrollo de la solución propuesta anteriormente. Se dividirá en los
-siguiente subcapítulos:
+siguientes subcapítulos:
 
 \begin{enumerate}[a.]
 \item
@@ -675,9 +734,6 @@ siguiente subcapítulos:
   completo. Por último, se explicará cómo se diseñó el componente
   principal de la solución (el editor de interfaces).
 \item
-  Flujo del usuario: \textbf{\emph{EXPLICAR ESTO, SON BÁSICAMENTE CASOS
-  DE USO}}
-\item
   Primera etapa de construcción: el desarrollo de la solución se dividió
   en dos etapas principalmente. Primero, se desarrolló lo que se
   denominó una ``base'' del programa. Esta etapa contempló el desarrollo
@@ -685,7 +741,7 @@ siguiente subcapítulos:
   permitiera crear proyectos nuevos, crear, editar y eliminar archivos,
   compilar y correr el proyecto.
 \item
-  Primera etapa de construcción: la segunda parte del desarrollo se
+  Segunda etapa de construcción: la segunda parte del desarrollo se
   enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que
   este componente es el grueso de la solución, se decidió dedicar una
   etapa completa a él.
@@ -782,31 +838,42 @@ cualquier aplicación de escritorio), pero dado que proveerá simples
 accesos directos a funciones que se explicarán más adelante no se
 detallará su diseño ni implementación.
 
-En los siguientes párrafos se pretende explicar qué objetos existirán en
-el frontend, sus responsabilidades y cómo interactuarán entre ellos.
+\paragraph{Definición de Objetos}
+
+\label{section:object-definition}
+
+En esta sección se pretende explicar qué objetos existirán en el
+frontend, sus responsabilidades y cómo interactuarán entre ellos.
 Primero se definirán algunos conceptos necesarios para entender de qué
 tipos de objetos se estará hablando.
 
-\textbf{Modelo:} Representa un objeto en un proyecto, como por ejemplo
-un archivo, una carpeta o el proyecto mismo. Cada modelo es responsable
-de persistir su estado de alguna forma (comunicándose con un servidor o
-almacenando datos en el mismo navegador).
+\begin{description}
+\item[Modelo]
+Representa un objeto en un proyecto, como por ejemplo un archivo, una
+carpeta o el proyecto mismo. Cada modelo es responsable de persistir su
+estado de alguna forma (comunicándose con un servidor o almacenando
+datos en el mismo navegador).
+\item[Colección]
+Es básicamente una lista de instancias de un tipo de modelo. Por
+ejemplo, una carpeta podría considerarse una colección de archivos
+(siendo cada archivo una instancia de un modelo).
+\item[Vista]
+Una vista en Backbone es un archivo que se encarga de presentar
+información al usuario, y además de interactuar con él, por ejemplo
+ejecutando funciones cuando se haga un click en un botón. Una vista por
+lo general presenta un modelo (o una colección). Por ejemplo, se puede
+tener una vista para cada instancia de un archivo, o bien se pueden
+tener vistas que no presenten a ningún modelo en particular.
+\item[Template]
+Un template es un trozo de HTML que una vista utiliza para generar lo
+que el usuario ve. Si bien no son enteramente necesarias y una vista
+podría generar todo lo que necesita con Javascript, hacen la tarea algo
+más fácil. Contrario a lo que pueda suponerse, el editor visual en el
+que se trabajará en este documento editará los templates, y no las
+vistas.
+\end{description}
 
-\textbf{Colección:} Es básicamente una lista de instancias de un tipo de
-modelo. Por ejemplo, una carpeta podría considerarse una colección de
-archivos (siendo cada archivo una instancia de un modelo).
-
-\textbf{Vista:} Una vista en Backbone es un archivo que se encarga de
-presentar información al usuario, y además de interactuar con él, por
-ejemplo ejecutando funciones cuando se haga un click en un botón. Una
-vista por lo general presenta un modelo (o una colección). Por ejemplo,
-se puede tener una vista para cada instancia de un archivo, o bien se
-pueden tener vistas que no presenten a ningún modelo en particular.
-
-\textbf{Template:} Un template es un trozo de HTML que una vista utiliza
-para generar lo que el usuario ve. Si bien no son enteramente necesarias
-y una vista podría generar todo lo que necesita con Javascript, hacen la
-tarea algo más fácil.
+\subparagraph{Modelos y Colecciones}
 
 A continuación se explicará a grandes rasgos los modelos y colecciones
 que existirán en el frontend. Se tendrán modelos para los proyectos y
@@ -814,72 +881,222 @@ los archivos. Cada uno se encargará de comunicarse con el backend para
 obtener los datos que le sean necesarios o bien para guardar los
 cambios.
 
-\textbf{El modelo de proyecto} guardará el nombre de éste y una
-referencia a una colección de los archivos que se encuentren en la raíz
-de su carpeta. Tendrá como responsabilidades crear archivos y carpetas,
-ensamblar el proyecto e iniciar el servidor de pruebas. Estas acciones
-se complementan con llamadas al backend que realizan las tareas mismas.
+\begin{description}
+\item[El modelo de proyecto]
+Guardará el nombre de éste y una referencia a una colección de los
+archivos que se encuentren en la raíz de su carpeta. Tendrá como
+responsabilidades crear archivos y carpetas, ensamblar el proyecto e
+iniciar el servidor de pruebas. Estas acciones se complementan con
+llamadas al backend que realizan las tareas mismas.
+\item[El modelo de archivo]
+Se encargará de guardar el nombre y el contenido (en caso de que
+corresponda) del archivo o carpeta al que representa, además de guardar
+una referencia al proyecto al que pertenece y . Tendrá como
+responabilidades pedir su contenido, actualizarlo, renombrar y eliminar
+el archivo del sistema. Todas estas acciones se complementan además con
+llamadas al backend.
+\item[La colección de archivos]
+Tendrá como responsabilidad ordenar las listas de archivos una vez que
+la haya obtenido (además de guardar una referencia a cada modelo de
+archivo que le corresponda). Ordenar las listas de archios es importante
+pues el backend arroja una lista de archivos ordenada alfabéticamente,
+pero, dado que archivos y directorios son considerados de la misma forma
+en el backend, es necesario ordenar la lista de manera que los
+directorios queden arriba. Esto facilita encontrar archivos para el
+usuario.
+\end{description}
 
-\textbf{El modelo de archivo} se encargará de guardar el nombre y el
-contenido (en caso de que corresponda) del archivo o carpeta al que
-representa, además de guardar una referencia al proyecto al que
-pertenece y . Tendrá como responabilidades pedir su contenido,
-actualizarlo, renombrar y eliminar el archivo del sistema. Todas estas
-acciones se complementan además con llamadas al backend.
+\subparagraph{Vistas}
 
-\textbf{La colección de archivos} tendrá como responsabilidad ordenar
-las listas de archivos una vez que la haya obtenido (además de guardar
-una referencia a cada modelo de archivo que le corresponda). Ordenar las
-listas de archios es importante pues el backend arroja una lista de
-archivos ordenada alfabéticamente, pero, dado que archivos y directorios
-son considerados de la misma forma en el backend, es necesario ordenar
-la lista de manera que los directorios queden arriba. Esto facilita
-encontrar archivos para el usuario.
+Cada una de las siguientes vistas considera un template asociado.
 
-En lo que respecta a las vistas, se tendrán las siguientes:
+\begin{description}
+\item[Explorador de Archivos]
+se colocará en la barra lateral izquierda, y tendrá dos listas de
+archivos. Una lista de archivos actualmente abiertos y la lista de
+archivos y directorios en el proyecto. Tendrá entre sus
+responsabilidades mantener una lista de archivos que se encuentran
+actualmente abiertos para que el usuario pueda navegar entre ellos.
+\item[Archivo]
+Esta vista representará a un archivo en la vista anterior (exporador de
+archivos). Mostrará su nombre y un icono que represente si es un
+directorio, un archivo o una vista editable con el editor que se
+construirá. Entre sus responsabilidades están abrir los archivos (o sea,
+abrir el archivo en el editor de código o en el editor de vistas en caso
+que corresponda), embeber listas de archivos en caso de que se clickee
+un directorio y permitir al usuario renombrar archivos, mostrando un
+menú contextual.
+\item[Editor de Texto]
+Esta vista contendrá el editor de archivos de texto (editor de código).
+Sus responsabilidades serán mostrar un editor con resaltado de sintaxis
+y modificar el modelo de archivo que corresponda para guardar cambios.
+\item[Editor de Vistas]
+esta vista mostrará templates y, en una barra lateral derecha,
+diferentes componentes para que el usuario los arrastre y agregue.
+Contará además con un editor de código HTML, en caso de que el usuario
+quiera editar la vista o realizar cambios que el editor no permita
+directamente. Tiene las mismas responsabilidades que el editor de texto.
+\end{description}
 
-\textbf{Explorador de Archivos:} se colocará en la barra lateral
-izquierda, y tendrá dos listas de archivos. Una lista de archivos
-actualmente abiertos y la lista de archivos y directorios en el
-proyecto. Tendrá entre sus responsabilidades mantener una lista de
-archivos que se encuentran actualmente abiertos para que el usuario
-pueda navegar entre ellos.
+\paragraph{Diseño del Editor de Templates}
 
-\textbf{Archivo:} esta vista representará a un archivo en la vista
-anterior (exporador de archivos). Mostrará su nombre y un icono que
-represente si es un directorio, un archivo o una vista editable con el
-editor que se construirá. Entre sus responsabilidades están abrir los
-archivos (o sea, abrir el archivo en el editor de código o en el editor
-de vistas en caso que corresponda), embeber listas de archivos en caso
-de que se clickee un directorio y permitir al usuario renombrar
-archivos, mostrando un menú contextual.
+El editor de interfaces se construirá de manera que el usuario pueda
+arrastar componentes como botones o campos de texto directamente en una
+vista previa del template que esté editando. El contenido de los
+archivos de templates es simplemente HTML, por lo que es posible
+presentarlos directamente en la aplicación. Este contenedor o vista
+previa del template se le llamará ``canvas'' de ahora en adelante.
 
-\textbf{Editor de Texto:} esta vista contendrá el editor de archivos de
-texto (editor de código). Sus responsabilidades serán mostrar un editor
-con resaltado de sintaxis y modificar el modelo de archivo que
-corresponda para guardar cambios.
+El objetivo es que el usuario arrastre elementos hacia el canvas de la
+misma forma en la que se hace en Xcode o Visual Studio. El sistema debe
+proveerle retroalimentación visual mostrando el objeto que está
+arrastrando y además mostrar en qué lugar quedararía el elemento una vez
+que el usuario lo suelte.
 
-\textbf{Editor de Vistas:} esta vista mostrará templates y, en una barra
-lateral derecha, diferentes componentes para que el usuario los arrastre
-y agregue. Contará además con un editor de código HTML, en caso de que
-el usuario quiera editar la vista o realizar cambios que el editor no
-permita directamente. Tiene las mismas responsabilidades que el editor
-de texto.
+Para implementar este concepto de arrastrar y soltar, se utilizará
+jQuery UI. esta librería provee, entre otras cosas, métodos para
+habilitar el arrastrado de elementos en una página. El usuario
+arrastrará un elemento, y, mediante las llamadas de jQuery, se colocará
+el elemento en donde el usuario tenga su cursor en el momento, a manera
+de proveer retroalimentación visual. En cuanto el usuario suelte el
+elemento, se agregará su correspondiente fragmento de HTML en el
+template, lo que se reflejará en el canvas en tiempo real.
 
-\subsection{Flujo del Usuario (``Casos de Uso'')}
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/drag-editor.png}
+\caption{Los diferentes elementos de retroalimentación visual que se
+presentan al arrastrar un componente. \label{figures:drag-editor}}
+\end{figure}
 
-A continuación se detallarán algunos de los casos de uso que tiene la
-aplicación.
+En la Figura \ref{figures:drag-editor} se pueden apreciar los diferentes
+elementos de retroalimentación al momento de arrastrar un elemento. En
+el punto 1 se pueden apreciar, primero, un borde amarillo al rededor del
+elemento en donde ``caería'' el componente. Además, en el mismo número,
+puede visualizarse cómo se vería el componente (en este caso un botón)
+una vez que el usuario lo deje ahí. En el número 2, puede verse el mismo
+componente, que sigue al cursor mientras el usuario esté arrastrando.
+Esto le muestra al usuario qué es lo que está arrastrando.
 
-\subsubsection{Caso de Uso: El usuario ingresa a la aplicación}
-
-\subsubsection{Caso de Uso: El usuario crea un proyecto nuevo}
-
-\subsubsection{Caso de Uso: El usuario abre un proyecto existente}
+De esta forma, el desarrollador puede ver, por un lado, qué componente
+estaría agregando al canvas y, por otro lado, cómo quedaría éste una vez
+que lo agregue.
 
 \subsection{Primera Etapa de Construcción}
 
 \subsubsection{Creación del Entorno de Trabajo}
+
+En esta sección se detallarán cómo se crearon y estructuraron los dos
+entornos de trabajo, tanto para el backend como para el frontend.
+
+Ambos entornos de trabajo se crearon en carpetas independientes (dada su
+naturaleza) y se inicializaron repositorios Git en cada una, a manera de
+mantener un control de versiones en cada una.
+
+Para el control de versiones no se utilizó ninguna estrategia en
+especial. Dado que sólo el autor estará desarrollando, no valdría la
+pena implementar alguna estrategia de ramas o algo parecido para el
+control de versiones. Simplemente se utilizó la rama principal
+(\texttt{master} en Git), y se fueron creando ``commits'' cuando se
+considerara necesario.
+
+\paragraph{Entorno de Trabajo para el Backend}
+
+El backend utilizará Ruby con Sinatra. Sinatra se diferencia de, por
+ejemplo, Rails, en que es un framework mucho más simple. Por esto, es
+que no posee utilidades para crear directorios de trabajo. La idea
+detrás de Sinatra es crear todo en un sólo archivo. Si bien esto es
+posible, e incluso aconsejable para algunas aplicaciones, no lo es para
+ésta, en donde se tendrán diferentes modelos y controladores. Por lo
+tanto se definió la siguiente estructura para el backend:
+
+\begin{itemize}
+\item
+  \texttt{api}
+
+  \begin{itemize}
+  \item
+    \texttt{v1}
+
+    \begin{itemize}
+    \item
+      \texttt{config}: contiene diferentes archivos de configuración
+    \item
+      \texttt{controllers}: los diferentes controladores
+    \item
+      \texttt{models}: los modelos de usuario y proyecto
+    \item
+      \texttt{app.rb}: este archivo es la base de la aplicación Sinatra,
+      pues nicializa ciertas configuraciones y contiene métodos
+      compartidos por los controladores
+    \item
+      \texttt{boot.rb}: este archivo es cargado inicialmente y se
+      encarga de incluir las diferentes librerías y archivos para
+      incializar el servidor
+    \end{itemize}
+  \end{itemize}
+\item
+  \texttt{projects}: será el contenedor de los diferentes proyectos que
+  crearán los usuarios
+\item
+  \texttt{public}: esta carpeta sirve archivos estáticos directamente,
+  como imágenes
+\item
+  \texttt{Gemfile}: archivo utilizado por Bundler (una librería de Ruby)
+  para definir qué librerías y en qué versiones utilizará el backend
+\item
+  \texttt{config.ru}: archivo utilizado para levantar el servidor
+\end{itemize}
+
+Se decidió estructurar el backend en carpetas de versiones. La idea
+detrás de esto es poder dividir cada versión de la API de manera de no
+perder compatibilidad con posibles clientes que estén basados en una
+versión de la API. Por ejemplo, de llegar a crearse un cliente para
+tablets, cada cliente estaría atado a una versión específica. Si se
+cambiara algún método (o se descontinuara), el cliente automáticamente
+fallaría. En cambio, teniendo diferentes versiones, se puede mantener
+esta compatibilidad.
+
+Se creó además una carpeta llamada \texttt{projects}. Esta carpeta (que
+no es accesible directamente), guarda cada uno de los proyectos de cada
+usuario. Cada vez que se inicialice uno nuevo, se creará una subcarpeta
+en este directorio con la estructura determinada.
+
+El archivo \texttt{Gemfile} es un archivo que utiliza la librería
+Bundler\footnote{Citar blablabla.}. Esta utilidad permite especificar
+librerías externas que se quieren incluir en un proyecto (en este caso
+el backend) y especificar sus versiones. Por ejemplo, un extracto de un
+archivo Gemfile podría verse así:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gem }\StringTok{'sinatra'}\NormalTok{, }\StringTok{'1.3.3'} \CommentTok{# Especifica que se utilizará la versión 1.3.3}
+
+\NormalTok{gem }\StringTok{'activerecord'}\NormalTok{, }\StringTok{'~> 3.2'} \CommentTok{# Especifica que se utilizarán }
+                             \CommentTok{# versiones 3.2.X}
+
+\NormalTok{gem }\StringTok{'haml'} \CommentTok{# Especifica que se utilizará la última versión}
+\end{Highlighting}
+\end{Shaded}
+
+La gran utilidad de esta herramienta es que, al momento de ejecutar en
+la consola \texttt{bundle install}, las versiones especificadas son
+descargadas y se crea un archivo llamado \texttt{Gemfile.lock} que
+guarda las versiones que están siendo utilizadas. De esta forma, cuando
+otro desarrollador descargue el repositorio y ejecute nuevamente
+\texttt{bundle install} para instalar las dependencias, se descargarán
+exactamente esas versiones y ambos desarrolladores tendrán el mismo
+entorno de desarrollo.
+
+Finalmente, el archivo \texttt{config.ru} especifica cómo debe
+levantarse el servidor. Este archivo detalla diferentes rutas que deben
+ser ``montadas'' y a las cuales el servidor debe responder de diferentes
+maneras. En este caso, se tendrán dos rutas (incialmente). Una, en la
+que se montará el backend mismo, o sea, \texttt{/api/v1}, y la otra, en
+la que se montará un servidor estático que sirva los archivos en la
+carpeta \texttt{public}.
+
+\paragraph{Entorno de Trabajo para el Frontend}
 
 De la misma forma en que Switch utilizará Brunch para crear y
 administrar proyectos, se decidió utilizar la misma solución para
@@ -888,6 +1105,54 @@ construir la IDE. Brunch utiliza un sistema de esqueletos
 de los proyectos. Existe una gran variedad, utilizando diferentes
 lenguajes y frameworks. Se encontró uno que utiliza Backbone y
 CoffeeScript y se utilizó para crear la estructura de archivos inicial.
+
+De no existir esta estructura, habría que escribir todo dentro de un
+sólo archivo, lo que para aplicaciones muy pequeñas puede ser práctico,
+pero no lo es en este caso. La estructura consiste en la siguiente:
+
+\begin{itemize}
+\item
+  \texttt{app}
+
+  \begin{itemize}
+  \item
+    \texttt{assets}: imágenes y el archivo HTML principal de la
+    aplicación
+  \item
+    \texttt{models}: los modelos y colecciones
+  \item
+    \texttt{routers}: definen los diferentes estados de la aplicación e
+    inicializan lo necesario para funcionar en cada uno
+  \item
+    \texttt{styles}: archivos de estilo (CSS) modularizados para cada
+    sección de la aplicación
+  \item
+    \texttt{views}: las vistas (o controladores)
+
+    \begin{itemize}
+    \item
+      \texttt{templates}: los archivos con HTML de cada vista
+    \end{itemize}
+  \end{itemize}
+\item
+  \texttt{vendor}: librerías (Javascript o CSS) externas, como jQuery,
+  Bootstrap, etc.
+\end{itemize}
+
+Existen otras carpetas que acá no se mencionan dado que no son
+relevantes a la aplicación. La funcionalidad de cada uno de estos tipos
+de archivos se explicaron en la Sección \ref{section:object-definition}.
+
+Para crear el entorno de trabajo, simplemente se ejecuta el siguiente
+comando:
+
+\begin{verbatim}
+brunch new -s git://github.com/meleyal/brunch-crumbs.git
+\end{verbatim}
+
+Este comando utiliza el esqueleto presente en
+\href{https://github.com/meleyal/brunch-crumbs}{github.com/meleyal/brunch-crumbs}
+para crear un directorio con la estructura ya mencionada.
 
 \subsubsection{Prototipado de la Interfaz}
 
@@ -932,11 +1197,15 @@ directamente.
 
 \subsubsection{Creación de Servicios en el Backend}
 
+\label{section:create-services}
+
 Para poder crear las funcionalidades necesarias en el frontend, se
 decidió crear primero los servicios en el Backend. Éstos son los
 siguientes:
 
 \begin{itemize}
+\item
+  Autentificación de Usuarios
 \item
   Creación de proyectos
 \item
@@ -968,8 +1237,8 @@ directorio).
 
 Ahora, si bien sólo existirá un modelo para el proyecto, en términos de
 la interfaz que proveerá el backend, si se reflejará una diferencia
-entre archivos y proyectos. Específicamente, se tendrán las siguientes
-rutas para realizar diferentes acciones:
+entre archivos y proyectos. Por ejemplo, las siguientes son algunas de
+las rutas para realizar diferentes acciones:
 
 \begin{itemize}
 \item
@@ -980,21 +1249,383 @@ rutas para realizar diferentes acciones:
 \item
   \texttt{GET /projects/:id/files?path=/ruta/al/directorio}: lista los
   archivos en el directorio especificado
-\item
-  \textbf{\emph{etc \ldots{}}}
 \end{itemize}
 
 Aún cuando proyectos y archivos se manejarán en el mismo modelo, se
 dividirán en dos controladores, a manera de encapsular en cierta medida
 su funcionalidad.
 
-La creación de toda la funcionalidad ya descrita requirió utilizar
-varias funciones de manipulación de archivos y ejecución de comando en
-Ruby.
+En las subsecciones siguientes se discutirán algunas de las
+implementaciones de funcionalidades en el backend. Sin embargo no se
+discutirán los métodos que se publican y son accesibles a través de la
+API. Éstos últimos simplemente arrojan respuestas con objetos JSON como
+el que sigue para comunicarse con el frontend, por lo que no se
+considera necesario entrar en mucho detalle.
 
-\textbf{\emph{EXPLICAR ACÁ ALGUNAS IMPLEMENTACIONES}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[}
+    \NormalTok{\{}
+        \DataTypeTok{"name"}\NormalTok{: }\StringTok{"app"}\NormalTok{,}
+        \DataTypeTok{"parent"}\NormalTok{: }\StringTok{""}\NormalTok{,}
+        \DataTypeTok{"type"}\NormalTok{: }\StringTok{"directory"}
+    \NormalTok{\},}
+    \NormalTok{\{}
+        \DataTypeTok{"name"}\NormalTok{: }\StringTok{"Cakefile"}\NormalTok{,}
+        \DataTypeTok{"parent"}\NormalTok{: }\StringTok{""}\NormalTok{,}
+        \DataTypeTok{"type"}\NormalTok{: }\StringTok{"file"}
+    \NormalTok{\},}
+    \NormalTok{\{}
+        \DataTypeTok{"name"}\NormalTok{: }\StringTok{"conf"}\NormalTok{,}
+        \DataTypeTok{"parent"}\NormalTok{: }\StringTok{""}\NormalTok{,}
+        \DataTypeTok{"type"}\NormalTok{: }\StringTok{"directory"}
+    \NormalTok{\},}
+    \NormalTok{\{}
+        \DataTypeTok{"name"}\NormalTok{: }\StringTok{"config.coffee"}\NormalTok{,}
+        \DataTypeTok{"parent"}\NormalTok{: }\StringTok{""}\NormalTok{,}
+        \DataTypeTok{"type"}\NormalTok{: }\StringTok{"file"}
+    \NormalTok{\}}
+    \ErrorTok{//} \ErrorTok{etc...}
+\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+El anterior es un fragmento de una respuesta del servidor al pedir los
+archivos en el directorio raíz de un projecto.
+
+\paragraph{Autentificación de Usuarios}
+
+Para autentificar usuarios se utilizó el sistema OAuth de GitHub. OAuth
+es un protocolo de autentificación y autorización que utiliza un
+proveedor. El proveedor en este caso es GitHub. La ventaja de este
+protocolo es que permite registrar y autentificar usuarios sin manejar
+un sistema de usuarios interno, quitando la necesidad de almacenar
+contraseñas y requerir al usuario registrarse en el sitio.
+
+Funciona de la siguiente manera:
+
+\begin{enumerate}[1.]
+\item
+  El consumidor (o sea, el backend en este caso) pide un token inicial
+  al proveedor (en este caso GitHub).
+\item
+  GitHub genera este token único y lo devuelve.
+\item
+  Con este token, se genera una URL a la que el usuario es
+  redireccionado.
+\item
+  Esta URL pertenece al proveedor, y es acá donde el usuario se
+  autentifica contra el proveedor (no contra el consumidor). Al usuario
+  se le da la opción de autorizar o denegar el acceso.
+\item
+  Si el usuario autoriza el acceso, es redireccionado al consumidor.
+\item
+  El consumidor ahora puede hacer una nueva petición al proveedor
+  utilizando el mismo token inicial.
+\item
+  El proveedor, sabiendo que el usuario autorizó el acceso, entrega un
+  \emph{token de acceso}.
+\end{enumerate}
+
+Este token de acceso permite al consumidor acceder a toda la información
+que el cliente haya autorizado. En el caso de este trabajo, sólo se
+necesitan el nombre y el correo electrónico. En la Figura
+\ref{figures:oauth} (en inglés) se puede apreciar el protocolo de mejor
+manera.\footnote{Poner referencia! http://oauth.googlecode.com/.}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/oauth-diagram.png}
+\caption{Fragmento del diagrama de flujo de autentificación de OAuth
+\label{figures:oauth}}
+\end{figure}
+
+Como puede apreciarse, implementar el protocolo OAuth manualmente
+resulta algo tedioso. Son bastantes los casos que deben considerarse y
+atenerse al protocolo podría tomar tiempo. Afortunadamente, existen
+diferentes librerías que permiten implementar este sistema de
+autentificación en muy poco tiempo. La librería Omniauth\footnote{Url!}
+provee mecanismos de autentificación mediante OAuth y OpenID para
+diferentes proveedores (desde GitHub hasta Google). Junto con la
+librería omniauth-github, es posible implementar autentificación en muy
+poco tiempo.
+
+El primer paso es crear una ``aplicación'' en el portal de
+desarrolladores de GitHub. Con esto, el proveedor entrega dos
+identificadores que permiten inicializar comunicaciones con ellos y
+autentificar a usuarios. En la Figura \ref{figures:oauth-create} se
+puede ver el proceso de creación de aplicaciones, y en la Figura
+\ref{figures:oauth-app} pueden verse ambos identificadores. Es
+simplemente entregar un nombre, una URL principal (que permite a GitHub
+asegurarse que las peticiones vienen del servidor que corresponde) y una
+URL a la cual redirigir al usuario (que puede sobreescribirse en cada
+petición).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/oauth-create.png}
+\caption{Proceso de creado de aplicaciones en GitHub
+\label{figures:oauth-create}}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/oauth-app.png}
+\caption{Acá pueden apreciarse ambos identificadores que entrega GitHub
+\label{figures:oauth-app}}
+\end{figure}
+
+\paragraph{Creación de Proyectos}
+
+La creación de un proyecto nuevo es relativamente simple. Consiste en
+crear un nuevo proyecto en la base de datos con el nombre que provee el
+usuario, y luego crear el proyecto mismo utilizando Brunch.
+
+Al crear un proyecto nuevo, el modelo guarda en la base de datos una
+nueva entrada que está asociada al usuario que hace la llamada a la API.
+Guarda un nombre para el proyecto, la ruta en la que fue guardado el
+esqueleto y un puerto único. Antes de guardar la entrada en la base de
+datos, un ``callback'' es gatillado en el mismo modelo (en Ruby) que
+ejecuta el comando que crea la carpeta para el proyecto, como se detalla
+a continuación:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{create_project}
+  \CommentTok{# Create a random path and the project}
+  \DecValTok{self}\NormalTok{.path = }\StringTok{"}\OtherTok{#\{}\DecValTok{self}\NormalTok{.name}\OtherTok{\}}\StringTok{-}\OtherTok{#\{}\DataTypeTok{SecureRandom}\NormalTok{.hex(}\DecValTok{10}\NormalTok{)}\OtherTok{\}}\StringTok{"}
+  \NormalTok{system }\StringTok{"brunch new }\OtherTok{#\{}\DecValTok{self}\NormalTok{.full_path}\OtherTok{\}}\StringTok{ \textbackslash{}}
+\StringTok{          -s git://github.com/ianmurrays/brunch-crumbs.git"}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Se crea un sufijo aleatorio para evitar colisiones con proyectos que
+tengan el mismo nombre, y se llama a un comando de sistema para crear el
+esqueleto. Esta implementación no es perfecta, dado que podría darse el
+caso de que \texttt{SecureRandom.hex(10)} arroje una cadena aleatoria
+idéntica a alguna anterior. Para efectos del desarrollo del presente
+trabajo, se decidió no darle demasiada importancia a este defecto, dado
+que las probabilidades de que ello ocurra son demasiado bajas.
+
+Después de que finalice este comando, se llama a un segundo ``callback''
+que crea el número de puerto único para esta aplicación:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{randomize_port}
+  \KeywordTok{begin}
+    \DecValTok{self}\NormalTok{.port = }\DecValTok{8000} \NormalTok{+ rand(}\DecValTok{2000}\NormalTok{)}
+  \KeywordTok{end} \KeywordTok{until} \DataTypeTok{Project}\NormalTok{.where(port: }\DecValTok{self}\NormalTok{.port).count == }\DecValTok{0}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Básicamente asigna un puerto entre 8000 y 10000 aleatorio (y único) a
+cada proyecto. De esta forma, si se están editando dos proyectos
+simultáneamente, pueden levantarse dos instancias para hacer pruebas sin
+colisionar. Esta implementación, si bien es suficiente para el
+desarrollo de la herramienta y para este trabajo, no sería una
+implementación ideal en producción, dado que alguno de esos puertos
+podría estar siendo ocupado por algún servicio en el sistema. En una
+futura implementación podría agregarse algún mecanismo que verifique la
+disponibilidad del puerto al momento de asignarlo, o bien, verifique y
+asigne puertos cada vez que se ensamble y corra el proyecto.
+
+\paragraph{Manipulación de Archivos}
+
+La manipulación de archivos se hace directamente sobre ellos usando
+librerías estándar de Ruby. Sólo se discutirán algunas de las
+implementaciones presentes en el backend.
+
+Para listar los archivos presentes en una determinada ruta, se utilizó
+la siguiente implementación:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{files_in(folder = }\StringTok{""}\NormalTok{)}
+  \CommentTok{# Remove leading and trailing slashes}
+  \NormalTok{folder.gsub! }\OtherTok{/^\textbackslash{}//}\NormalTok{, }\StringTok{""}
+  \NormalTok{folder.gsub! }\OtherTok{/\textbackslash{}/$/}\NormalTok{, }\StringTok{""}
+
+  \NormalTok{files = }\DataTypeTok{Dir}\NormalTok{[}\StringTok{"}\OtherTok{#\{}\DecValTok{self}\NormalTok{.full_path}\OtherTok{\}}\StringTok{/}\OtherTok{#\{}\NormalTok{folder}\OtherTok{\}}\StringTok{/*"}\NormalTok{].collect }\KeywordTok{do} \NormalTok{\textbar{}entry\textbar{}}
+    \KeywordTok{next} \KeywordTok{if}\OtherTok{ %w\{}\StringTok{server.js node_modules}\OtherTok{\}}\NormalTok{.include? }\DataTypeTok{File}\NormalTok{.basename(entry)}
+    \DecValTok{self}\NormalTok{.file_to_hash entry, folder}
+  \KeywordTok{end}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+El método lista todos los archivos presentes en la ruta especificada. De
+no especificarse, lista los archivos en la raíz del proyecto. Primero se
+eliminan las barras (\texttt{/}) al principio y final de la ruta que se
+especifique, y luego se recorre el directorio usando la clase
+Dir\footnote{Http://ruby-doc.org/core-1.9.3/Dir.html.}. La llamada a
+\texttt{Dir{[}"/ruta/a/directorio"{]}} retorna un array que se recorre
+utilizando \texttt{collect}. El método \texttt{collect} en los arreglos
+genera un nuevo arreglo con los elementos que retorne el bloque que se
+le pase. \texttt{collect} pasa cada elemento del arreglo original al
+bloque como argumento para su manipulación. Por ejemplo, si el siguiente
+fragmento de código retorna un nuevo arreglo con sus elementos elevados
+al cuadrado:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{].collect }\KeywordTok{do} \NormalTok{\textbar{}num\textbar{}}
+  \NormalTok{num * num}
+\KeywordTok{end}
+
+\CommentTok{# => [1,4,9,16,25]}
+\end{Highlighting}
+\end{Shaded}
+
+Por lo tanto, la variable \texttt{files} en la implementación de
+\texttt{files\_in} contendrá la representación en un Hash\footnote{Http://www.ruby-doc.org/core-1.9.3/Hash.html.}
+(básicamente un diccionario) de cada archivo (o directorio). Además, se
+excluirán el directorio \texttt{node\_modules} y el archivo
+\texttt{server.js} del listado, dado que son un directorio y un archivo
+que no deben ser manipulados por el desarrollador.
+
+La implementación del método \texttt{file\_to\_hash} es relativamente
+simple, y genera un diccionario con el nombre, padre y tipo de archivo
+para la ruta que se le pase como parámetro:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{file_to_hash(file, folder)}
+  \NormalTok{\{}
+    \StringTok{:name} \NormalTok{=> }\DataTypeTok{File}\NormalTok{.basename(file),}
+    \StringTok{:parent} \NormalTok{=> folder,}
+    \StringTok{:type} \NormalTok{=> }\KeywordTok{if} \DataTypeTok{File}\NormalTok{.directory?(file)}
+      \StringTok{:directory}
+    \KeywordTok{else}
+      \StringTok{:file}
+    \KeywordTok{end}
+  \NormalTok{\}}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Para obtener y actualizar el contenido de archivos se utilizó una
+implementación relativamente simple:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{file_content(path)}
+  \KeywordTok{if} \DataTypeTok{FileTest}\NormalTok{.exists? }\DecValTok{self}\NormalTok{.full_path(path) \textbackslash{}}
+     \KeywordTok{and}\NormalTok{ ! }\DataTypeTok{File}\NormalTok{.directory? }\DecValTok{self}\NormalTok{.full_path(path)}
+    \NormalTok{\{}
+      \StringTok{:content} \NormalTok{=> }\DataTypeTok{File}\NormalTok{.read(}\DecValTok{self}\NormalTok{.full_path(path))}
+    \NormalTok{\}}
+  \KeywordTok{end}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Básicamente, se verifica que el archivo indicado exista y que no sea un
+directorio, y se retorna un Hash indicando el contenido del archivo. Se
+decidió retornar un Hash pues facilita su lectura en el frontend,
+retornando un objeto JSON en vez del contenido directamente.
+
+Para la escritura de archivos se utilizó una implementación similar:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{update_file(path, content)}
+  \KeywordTok{if} \DataTypeTok{FileTest}\NormalTok{.exists? }\DecValTok{self}\NormalTok{.full_path(path) \textbackslash{}}
+     \KeywordTok{and}\NormalTok{ ! }\DataTypeTok{File}\NormalTok{.directory? }\DecValTok{self}\NormalTok{.full_path(path)}
+    \DataTypeTok{File}\NormalTok{.open(}\DecValTok{self}\NormalTok{.full_path(path), }\StringTok{'w'}\NormalTok{) }\KeywordTok{do} \NormalTok{\textbar{}file\textbar{}}
+      \NormalTok{file.write content}
+    \KeywordTok{end}
+  \KeywordTok{end}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Se realiza la misma verificación que al momento de obtener el contenido.
+Si el archivo existe y no es una carpeta, se reemplaza todo el contenido
+directamente.
+
+El renombrado de archivos y carpetas se realiza con el siguiente método:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{rename_file(path, new_path)}
+  \KeywordTok{if} \DataTypeTok{FileTest}\NormalTok{.exists? }\DecValTok{self}\NormalTok{.full_path(path)}
+    \DataTypeTok{File}\NormalTok{.rename }\DecValTok{self}\NormalTok{.full_path(path), }\DecValTok{self}\NormalTok{.full_path(new_path)}
+  \KeywordTok{end}
+
+  \NormalTok{directory = }\DataTypeTok{File}\NormalTok{.split(new_path).first}
+
+  \DecValTok{self}\NormalTok{.file_to_hash }\DecValTok{self}\NormalTok{.full_path(new_path), directory}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Se le pasan la ruta actual y la ruta nueva del archivo, y se devuelve la
+nueva representación de éste para actualizar el modelo en el frontend.
+La llamada a \texttt{File.rename} permite no sólo renombrar el archivo o
+directorio, sino que además permite cambiar su ruta.
+
+\paragraph{Ensamblado y Servidor de Pruebas}
+
+Para realizar el ensamblado se utiliza Brunch. De manera muy similar a
+la creación de proyectos, es necesario ejecutar un comando de terminal
+desde Ruby. La diferencia con la creación, es que acá se necesita leer
+la salida del comando de manera de detectar si el ensamblado fue exitoso
+o no. Para esto, se utiliza un comando distinto de \texttt{system} como
+se vio antes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{build_project}
+  \NormalTok{output, result = ::}\DataTypeTok{Open3}\NormalTok{.capture2e }\StringTok{"cd }\OtherTok{#\{}\DecValTok{self}\NormalTok{.full_path}\OtherTok{\}}\StringTok{ && brunch build"}
+
+  \NormalTok{\{}
+    \StringTok{:output} \NormalTok{=> output,}
+    \StringTok{:result} \NormalTok{=> (output =~ }\OtherTok{/error/} \NormalTok{\textbar{}\textbar{} ! (output =~ }\OtherTok{/compiled/}\NormalTok{))}
+  \NormalTok{\}}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+La librería Open3\footnote{Http://www.ruby-doc.org/stdlib-1.9.3/libdoc/open3/rdoc/Open3.html.}
+ejecutar comandos en el terminal con mayor flexibilidad. Dentro de los
+comandos que provee está \texttt{capture2e}, que devuelve el output de
+\texttt{stdout}y \texttt{stderr} combinados. Esto es útil en esta
+situación dado que el ensamblado puede ser exitoso como no. De esta
+forma, se ejecuta el comando \texttt{brunch build}, y se revisa su
+output. Si éste contiene ``error'' o no contiene ``compiled'', significa
+que ocurrió algún error, y el output se envía al frontend para que sea
+mostrado.
+
+Para ejecutar el servidor, se utiliza un acercamiento similar:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \NormalTok{run_project}
+  \NormalTok{output, result = ::}\DataTypeTok{Open3}\NormalTok{.capture2e }\StringTok{"cd }\OtherTok{#\{}\DecValTok{self}\NormalTok{.full_path}\OtherTok{\}}\StringTok{ \textbackslash{}}
+\StringTok{                   && forever stop server.js }\OtherTok{#\{}\DecValTok{self}\NormalTok{.port}\OtherTok{\}}\StringTok{ \textbackslash{}}
+\StringTok{                   && forever start server.js }\OtherTok{#\{}\DecValTok{self}\NormalTok{.port}\OtherTok{\}}\StringTok{"}
+
+  \NormalTok{\{}
+    \StringTok{:output} \NormalTok{=> output,}
+    \StringTok{:url} \NormalTok{=> }\StringTok{"}\OtherTok{#\{}\DataTypeTok{Api}\NormalTok{::}\DataTypeTok{V1}\NormalTok{::}\DataTypeTok{App}\NormalTok{.settings.run_url}\OtherTok{\}}\StringTok{:}\OtherTok{#\{}\DecValTok{self}\NormalTok{.port}\OtherTok{\}}\StringTok{"}\NormalTok{,}
+    \StringTok{:result} \NormalTok{=> !(output =~ }\OtherTok{/Forever processing file/}\NormalTok{)}
+  \NormalTok{\}}
+\KeywordTok{end}
+\end{Highlighting}
+\end{Shaded}
+
+Utilizando un programa llamado ``forever''\footnote{Https://github.com/nodejitsu/forever.},
+se ejecuta un script que ya se mencionó anteriormente (que además viene
+con el esqueleto utilizado por brunch al crear el proyecto). Este script
+levanta un servidor estático en el puerto que se especifique, y si la
+ejecución fue exitosa se retorna la información necesaria al frontend.
 
 \subsubsection{Agregado de Funcionalidad al Prototipo del Frontend}
+
+\paragraph{Selector de Proyectos}
 
 Se comenzó por implementar el selector de proyectos. Para esto fue
 necesario implementar el modelo y colección de proyectos. En esta etapa
@@ -1017,31 +1648,75 @@ cual se habla, y la segunda será la que tendrá cada proyecto. Por lo
 tanto, se configuró la URL base, y, en el método que es llamado, se
 inicializa la colección de proyectos.
 
-En este punto, la colección es pasada a una vista. Las vistas, como se
-explicó antes, son las encargadas de presentar datos al usuario (por
-medio de templates). Esta vista, básicamente, presenta una lista de
-proyectos y un formulario para crear uno nuevo (esta última
-funcionalidad se creará en la segunda etapa).
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{routes}\KeywordTok{:}
+  \StringTok{''}\KeywordTok{:} \StringTok{'index'}
 
-\textbf{\emph{AGREGAR SCREENSHOT DE CREAR UN PROYECTO}}
+\NormalTok{index}\KeywordTok{:} \FunctionTok{->}
+  \CommentTok{# We load projects and show them on a modal window}
+  \NormalTok{projects }\KeywordTok{=} \KeywordTok{new} \DataTypeTok{Projects}\KeywordTok{()}
+  
+  \NormalTok{projectsView }\KeywordTok{=} \KeywordTok{new} \DataTypeTok{ProjectsView}\KeywordTok{(}\NormalTok{collection}\KeywordTok{:} \NormalTok{projects}\KeywordTok{)}
+  \NormalTok{$}\KeywordTok{(}\StringTok{'body'}\KeywordTok{).}\NormalTok{append projectsView}\KeywordTok{.}\NormalTok{render}\KeywordTok{().}\NormalTok{el}
+  \NormalTok{$}\KeywordTok{(}\StringTok{"#}\CharTok{#\{}\NormalTok{projectsView.id}\CharTok{\}}\StringTok{"}\KeywordTok{).}\NormalTok{modal}
+    \NormalTok{backdrop}\KeywordTok{:} \StringTok{'static'}
+    \NormalTok{keyboard}\KeywordTok{:} \OtherTok{false}
+
+  \NormalTok{projects}\KeywordTok{.}\NormalTok{fetch}\KeywordTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+En el fragmento de código anterior puede verse el método \texttt{index}
+que es llamado en este punto. Luego, la colección es pasada a una vista.
+Las vistas, como se explicó antes, son las encargadas de presentar datos
+al usuario (por medio de templates). Esta vista, básicamente, presenta
+una lista de proyectos y un formulario para crear uno nuevo (esta última
+funcionalidad se creará en la segunda etapa), como puede apreciarse en
+la Figura \ref{figures:projects-view}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/projects-view.png}
+\caption{La ventana modal de selección de proyectos.
+\label{figures:projects-view}}
+\end{figure}
 
 Al usuario hacer click en un proyecto existente, se llama a la segunda
-ruta ya mencionada. Esta ruta, toma el identificador de proyecto de la
-url (que tienen un formato estilo \texttt{proyects/IDENTIFICADOR}) e
-instancia un proyecto usando ese identificador. Una vez que se haya
-obtenido toda su información desde el servidor, se le asigna el modelo
-al proyecto (de manera que su instancia quede compartida) y se
-inicializa el visor de archivos (que es una vista) con éste.
+ruta en el enrutador:
 
-En este paso, se instancia el visor de archivos. El visor de archivos
-toma el modelo de proyecto y ``pide'' su carpeta raíz. El modelo hace
-una petición al backend, y éste contesta con una representación de cada
-archivo (o carpeta) del directorio raíz. A continuación un ejemplo de la
-respuesta del servidor:
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{routes}\KeywordTok{:}
+  \StringTok{''}\KeywordTok{:} \StringTok{'index'}
+  \StringTok{'projects/:id'}\KeywordTok{:} \StringTok{'project'}
 
-\begin{verbatim}
-JSON ACA OH SI
-\end{verbatim}
+\NormalTok{index}\KeywordTok{:} \FunctionTok{->}
+  \CommentTok{# Omitido por brevedad.}
+
+\NormalTok{project}\KeywordTok{:} \FunctionTok{(id) ->}
+  \NormalTok{app}\KeywordTok{.}\NormalTok{project }\KeywordTok{=} \KeywordTok{new} \DataTypeTok{Project}\KeywordTok{(}\NormalTok{id}\KeywordTok{:} \NormalTok{id}\KeywordTok{)}
+  \NormalTok{app}\KeywordTok{.}\NormalTok{project}\KeywordTok{.}\NormalTok{fetch}
+    \NormalTok{success}\KeywordTok{:} \FunctionTok{=>}
+      \NormalTok{app}\KeywordTok{.}\NormalTok{filebrowser}\KeywordTok{.}\NormalTok{setModel app}\KeywordTok{.}\NormalTok{project}
+      \NormalTok{Backbone}\KeywordTok{.}\NormalTok{Mediator}\KeywordTok{.}\NormalTok{pub }\StringTok{'status:set'}\KeywordTok{,} \StringTok{"Project Loaded"}
+
+  \NormalTok{Backbone}\KeywordTok{.}\NormalTok{Mediator}\KeywordTok{.}\NormalTok{pub }\StringTok{'modal:hide'}
+\end{Highlighting}
+\end{Shaded}
+
+Esta ruta, toma el identificador de proyecto de la url (que tienen un
+formato estilo \texttt{proyects/IDENTIFICADOR}) e instancia un proyecto
+usando ese identificador. Una vez que se haya obtenido toda su
+información desde el servidor, se le asigna el modelo a la aplicación
+(de manera que su instancia quede compartida) y se inicializa el visor
+de archivos (que es una vista) con éste.
+
+El visor de archivos toma el modelo de proyecto y ``pide'' su carpeta
+raíz. El modelo hace una petición al backend, y éste contesta con una
+representación de cada archivo (o carpeta) del directorio raíz. La
+respuesta a esta llamada se presentó en la Sección
+\ref{section:create-services}.
 
 El visor de archivos, instancia una vista de archivo por cada uno de los
 documentos que responde el backend. La vista de archivo se encarga de
@@ -1052,7 +1727,7 @@ Esta parte resultó ser un poco complicada de implementar, dado que lo
 que se necesita es básicamente mostrar el mismo tipo de vista que la
 raíz del proyecto pero para un subproyecto. Lo que se hizo en este caso
 es lo siguiente: cuando el usuario hace click en un directorio, se
-instancia una colleción de archivos con la ruta a ese directorio. Se
+instancia una colección de archivos con la ruta a ese directorio. Se
 hace una petición al servidor para que entregue la lista de archivos en
 esa carpeta y se instancian vistas de archivo para cada uno,
 embebiéndolas en la misma vista del directorio que se acaba de clickear.
@@ -1076,7 +1751,7 @@ permite al usuario editar el contenido de los archivos. El editor de
 código se encarga además de indicarle al modelo del archivo que guarde
 su contenido en el backend si el usuario lo solicita.
 
-\textbf{\emph{NO SE SI EXPLICAR MÁS DE LO ANTERIOR}}
+\textbf{\emph{EXPLICAR MÁS DE LO ANTERIOR}}
 
 Para esta etapa de la construcción, se incluyó además la posibilidad de
 ensamblar y ejecutar el proyecto. Para esto, se agregaron métodos en el
@@ -1087,6 +1762,74 @@ mantuvieron inactivos. A la derecha de la barra de navegación se
 encuentra un botón que permite ensamblar y ejecutar el proyecto con un
 sólo click, y otros dos que permiten ejecutarlo y ensamblarlo por
 separado.
+
+En esta etapa se agregaron además atajos de teclado. Para esto se
+utilizó una librería Javascript llamada Mousetrap\footnote{Link!}. Esta
+librería permite configurar muy fácilmente atajos de teclado con una
+gran flexibilidad en términos de combinaciones de teclas. Por ejemplo,
+si se quisiera agregar un atajo de teclado para guardar el archivo
+actual, se puede hacer lo siguiente:
+
+\textbf{\emph{CORROBORAR ESTO}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Mousetrap}\KeywordTok{.}\NormalTok{bind }\KeywordTok{[}\StringTok{"ctrl+s"}\KeywordTok{,} \StringTok{"command+s"}\KeywordTok{],} \FunctionTok{->}
+  \CommentTok{# Guardar el archivo}
+\end{Highlighting}
+\end{Shaded}
+
+Esto permite que el usuario use la combinación ``CTRL+S'' o bien, en
+computadores Mac, ``COMMAND+S''. Es posible agregar atajos de teclado
+más complejos, como ``CTRL+ALT+S'' o ``CTRL+SHITF+S'', etc. Incluso, es
+posible saber si el usuario está manteniendo presionada alguna tecla.
+Por ejemplo, si se quiere saber si el usuario está manteniendo
+presionada la tecla ``SHIFT'', se puede hacer de la siguiente forma:
+
+\textbf{\emph{PONER EXTRACTO DE CÓDIGO ACA}}
+
+Utilizando esta librería, se agregaron varios atajos de teclado en esta
+etapa. Entre ellos:
+
+\begin{itemize}
+\item
+  Guardar archivo actual: \texttt{CTRL+S}
+\item
+  Cerrar el archivo actual: \texttt{CTRL+W}
+\item
+  Ejecutar el proyecto: \texttt{CTRL+R}
+\item
+  Cambiar entre archivos abiertos: \texttt{CTRL+NUMERO}
+\end{itemize}
+
+Este último atajo mencionado permite al usuario cambiar entre los
+archivos que están abiertos en la lista de la derecha, sin tener que
+mover sus manos del teclado básicamente. La mayoría de los editores de
+código permiten cambiar rápidamente entre los archivos abiertos de esta
+manera.
+
+La mayoría de los atajos de teclado son interpretados por el navegador.
+El atajo para guardar, para cambiar entre archivos abiertos, todos ellos
+son atajos que el navegador utiliza internamente. Para evitar que el
+navegador los interpretara, se utilizó el siguiente método:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Moustrap}\KeywordTok{.}\NormalTok{bind }\KeywordTok{[}\StringTok{"ctrl+s"}\KeywordTok{],} \FunctionTok{(event) ->}
+  \NormalTok{event}\KeywordTok{.}\NormalTok{prevendDefault}\KeywordTok{()}
+  
+  \CommentTok{# Guardar el archivo}
+\end{Highlighting}
+\end{Shaded}
+
+Cada ``evento'' que es generado en Javascript, normalmente es pasado a
+los callbacks. En este caso, es posible llamar al método
+\texttt{preventDefault()} del evento, lo que indica al navegador que no
+realice la acción por defecto que debería. Si no se llamara a este
+método, el archivo de todas formas se guardaría, pues el evento se está
+llamando de todas formas, pero el navegador también mostraría la ventana
+de ``Guardar Página'' que por defecto se mostraría en cualquier otro
+caso, y eso no es lo que se quiere en una aplicación web de este estilo.
 
 \subsection{Segunda Etapa de Construcción}
 
@@ -1270,14 +2013,368 @@ permiten cambiar entre el editor visual y el código fuente (ver Figura
 y el editor HTML \label{figure:html-editor}}
 \end{figure}
 
+\textbf{\emph{CONTENTEDITABLE!!!}}
+
+\clearpage
 \newpage
 
 \section{Resultados}
 
+\subsection{Producto Final}
+
+\textbf{\emph{Explicar qué se logró, qué puede hacer}}
+
+La herramienta que se logró en este trabajo permite desarrollar
+aplicaciones web completas en un navegador. Desde la creación del
+proyecto hasta la edición y ejecución de la aplicación, la solución es
+una IDE completa. Se logró incluir suficiente funcionalidad como para
+considerarse la solución buscada.
+
+El componente más importante de Switch, el editor de interfaces, logra
+asemejarse bastante a lo que se puede encontrar en herramientas
+similares, como Xcode u otras de las mencionadas en la Sección
+\ref{section:state-of-the-art}. Es un editor de uso intuitivo y con una
+gran cantidad de componentes presentes en Twitter Bootstrap, lo que
+permite prototipar interfaces rápida y fácilmente.
+
+Aun cuando el editor es de fácil uso, sigue estando apuntado a usuarios
+expertos (desarrolladores específicamente), y no a diseñadores u otras
+personas que deseen prototipar interfaces solamente. Por esto mismo es
+que el editor provee un modo de edición de HTML, para que el
+desarrollador pueda realizar cambios más ``finos'' en los templates que
+edite, además de tener la posibilidad de agregar más componentes que no
+estarían presentes en el listado.
+
+Además, está la posibilidad de ensamblar y probar el proyecto desde la
+misma IDE. El desarrollador puede simplemente presionar ``Build \& Run''
+o usar el atajo de teclado \texttt{CMD+R} (\texttt{CTRL+R} en Windows y
+Linux) para que el programa ensamble y levante el servidor con el
+proyecto.
+
+\subsection{Modo de Uso de la Herramienta}
+
+\textbf{\emph{Escribir acá un pequeño manual de cómo usar Switch}}
+
+\subsubsection{Cómo Crear un Proyecto}
+
+\subsubsection{Cómo Crear y Editar Archivos}
+
+\subsubsection{Cómo Editar Vistas}
+
+\subsubsection{Cómo Correr el Proyecto}
+
+\subsection{Criterios de Evaluación}
+
+La idea original de este proyecto era facilitar la creación de
+interfaces y ahorrar el tiempo que se invierte en su creación. La
+evaluación de la herramienta se basará en esto. Se crearán distintas
+interfaces, como formularios, tablas o paneles de información, y se
+medirá cuánto tiempo se requiere para crear tales interfaces usando
+Switch y codificándolas directamente.
+
+Esto permitirá medir diferentes factores que influyen. Por un lado, la
+facilidad que entrega el ``arrastrar y soltar'' de componentes, y, por
+otro lado, qué tanto influye la memoria del desarrollador al momento de
+codificar interfaces (considerando que se usa Twitter Bootstrap).
+
+Es importante mencionar que al momento de utilizar Switch para crear las
+interfaces, también se podrá utilizar el editor de HTML (pues el poder
+utilizar este editor además del editor visual es considerado una
+característica), mientras que al crearlas con HTML sólo se podrá
+utilizar un editor de texto, y no el editor visual.
+
+Los ejemplos de uso que se usarán para la medición serán los siguientes:
+
+\begin{itemize}
+\item
+  Un formulario de ingreso
+\item
+  Una tabla de usuarios
+\item
+  Un panel de información que consista de varias tablas
+\end{itemize}
+
+\subsection{Resultado de la Evaluación}
+
+Para el primer caso, el formulario de ingreso se logró lo que se muestra
+en la Figura \ref{figures:login-form}. El tiempo que se requirió para
+construir este modelo fue de aproximadamente \textbf{3 minutos}.
+Construir lo mismo manualmente tomó aproximadamente \textbf{5 minutos}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/login-form-switch.png}
+\caption{El formulario de ingreso construido usando el editor visual
+\label{figures:login-form}}
+\end{figure}
+
+Para el segundo caso, se logró construir la tabla que se muestra en la
+Figura \ref{figures:table-switch}. Utilizando Switch, se pudo construir
+la tabla en tan sólo \textbf{2.5 minutos}, mientras que construirla sólo
+con código tomó \textbf{3.5 minutos}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/table-switch.png}
+\caption{La tabla que se construyó con el editor
+\label{figures:table-switch}}
+\end{figure}
+
+La idea del panel de información es que contenga varias tablas con
+diferentes tipos de información y formularios varios. Construir el panel
+usando Switch tomó aproximadamente unos \textbf{9 minutos}, mientras que
+manualmente tomó \textbf{14 minutos}. El resultado se puede apreciar en
+la Figura \ref{figures:dashboard}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/dashboard.png}
+\caption{El panel de información o ``dashboard'' que se logró
+\label{figures:dashboard}}
+\end{figure}
+
+A continuación se resumen los resultados:
+
+\ctable[pos = H, center, botcap]{lll}
+{% notes
+}
+{% rows
+\FL
+\parbox[b]{0.22\columnwidth}{\raggedright
+Fruit
+} & \parbox[b]{0.22\columnwidth}{\raggedright
+Price
+} & \parbox[b]{0.29\columnwidth}{\raggedright
+Advantages
+}
+\ML
+\parbox[t]{0.22\columnwidth}{\raggedright
+Bananas
+} & \parbox[t]{0.22\columnwidth}{\raggedright
+\$1.34
+} & \parbox[t]{0.29\columnwidth}{\raggedright
+\begin{itemize}
+\item
+  built-in wrapper
+\item
+  bright color
+\end{itemize}
+}
+\\\noalign{\medskip}
+\parbox[t]{0.22\columnwidth}{\raggedright
+Oranges
+} & \parbox[t]{0.22\columnwidth}{\raggedright
+\$2.10
+} & \parbox[t]{0.29\columnwidth}{\raggedright
+\begin{itemize}
+\item
+  cures scurvy
+\item
+  tasty
+\end{itemize}
+}
+\LL
+}
+
+\ctable[pos = H, center, botcap]{lll}
+{% notes
+}
+{% rows
+\FL
+\parbox[b]{0.35\columnwidth}{\raggedright
+Caso de Ejemplo
+} & \parbox[b]{0.28\columnwidth}{\raggedright
+Tiempo con Switch
+} & \parbox[b]{0.29\columnwidth}{\raggedright
+Tiempo Manualmente
+}
+\ML
+\parbox[t]{0.35\columnwidth}{\raggedright
+Formulario de Ingreso
+} & \parbox[t]{0.28\columnwidth}{\raggedright
+3 minutos
+} & \parbox[t]{0.29\columnwidth}{\raggedright
+5 minutos
+}
+\LL
+}
+
+\textbf{\emph{PONER CONSIDERACION DE QUE IGUAL CACHO HARTO DE BOOTSTRAP
+:D}}
+
+\clearpage
 \newpage
 
 \section{Conclusiones}
 
+A continuación se presentarán conclusiones del presente trabajo, en
+respecto a la solución lograda, su efectividad, la metodología empleada,
+características que no se pudieron agregar (y las respectivas razones),
+y conclusiones para un trabajo futuro.
+
+\subsection{Sobre la Solución}
+
+La solución que se presenta en este documento permite disminuir los
+tiempos de desarrollo de soluciones web, facilitando la tarea que más
+tiempo consume. El prototipado y construcción de vistas en aplicaciones
+de cualquier tipo siempre es la más tediosa, sobre todo en el ambiente
+web donde todo debe hacerse por código. Usando Switch IDE, se facilita
+gran parte de esta tarea proveyendo al desarrollador con componentes
+utilizados comúnmente en el desarrollo de aplicaciones, como botones,
+formularios, tablas, entre otras.
+
+Sin embargo, posee algunas desventajas. Cada vez que se quiere probar
+algún cambio realizado en el programa, hay que reensamblar el proyecto,
+lo que toma tiempo. Esto, en todo caso, puede solucionarse y se discute
+en la Sección \ref{section:future-work} del presente capítulo. Otra
+desventaja que presenta la solución es que agregar lógica a los
+templates (como se hace normalmente en desarrollo web), es difícil. Por
+ejemplo, si se desea mostrar un botón sólo en caso de que alguna
+variable sea verdadera en el controlador, se debe agregar código a la
+vista y eso hace que el editor visual muestre este código. Soluciones a
+este problema se discuten también en la Sección
+\ref{section:future-work}.
+
+\subsection{Sobre la Metodología}
+
+El haber dividido el proceso de construcción en dos fases permitió
+evaluar la efectividad de las herramientas escogidas antes de comenzar
+con la programación del aspecto más importante de la solución. La
+primera fase involucró la creación del backend de manera casi completa,
+el prototipado de la interfaz y la creación de una base para el
+desarrollo de la segunda etapa.
+
+La división en dos fases fue acertada, y el orden del desarrollo de los
+diferentes componentes fue correcto, dado que de haber prototipado el
+editor de interfaces antes de comenzar con la base, se podría haber
+creado (accidentalmente) un editor completamente incompatible con la
+solución final. Ahora bien, el haber prototipado un editor de interfaces
+antes de comenzar con el desarrollo podría haber revelado dificultades
+que se podrían haber encontrado en la segunda etapa (aunque de todas
+formas se sabía que era posible desarrollar algo de esa índole dado que
+existían herramientas similares).
+
+\subsection{Sobre la Elección de Herramientas}
+
+\subsubsection{Herramientas del Backend}
+
+Haber elegido Ruby y Sinatra para construir el backend fue una buena
+decisión. Permitió crear un backend simple, liviano y mantenible en poco
+tiempo.
+
+\textbf{\emph{YA Y?}}
+
+\subsubsection{Herramientas del Frontend}
+
+En un principio se escogió Backbone para construir el frontend por su
+simplicidad, popularidad y por ser un framework liviano. Hubo que
+considerar que el autor no poseía conocimientos con ninguno de estos
+frameworks inicialmente, por lo que la elección se vio sesgada hacia una
+herramienta fácil de aprender y con buena documentación y soporte (o
+sea, una comunidad activa).
+
+Backbone probó ser un framework fácil de dominar y muy flexible. La
+presencia de varias librerías y extensa documentación en línea permitió
+dominar la herramienta en poco tiempo y crear una solución mantenible y
+legible.
+
+\subsection{Características que Faltaron}
+
+\textbf{\emph{NO SÉ SI AGREGAR ESTO EN LA MEMORIA}}
+
+La principal característica que se omitió fue la de poder ``unir''
+elementos con acciones en el editor de vistas. Por ejemplo, al agregar
+un botón, la idea sería conectarlo con el controlador de manera que al
+hacer click se ejecutara una determinada acción. En Xcode es posible
+presionar \texttt{CTRL} y arrastrar el componente hacia el código, y
+automáticamente se genera una acción que se ejecutaría al presionar el
+componente. Ver Figura \ref{figure:xcode-ctrl-drag}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{figures/xcode-ctrl-drag.png}
+\caption{Al presionar la tecla \texttt{CTRL} y arrastrar, es posible
+crear métodos directamente. \label{figure:xcode-ctrl-drag}}
+\end{figure}
+
+Otro feature que no se agregó es el de archivar los proyectos. Archivar
+significa básicamente ensamblar el proyecto y dejarlo listo para su
+implementación en un servidor. La idea de esta característica es
+ensamblar y comprimir el proyecto en un archivo zip para su posterior
+descarga.
+
+\subsection{Trabajo Futuro}
+
+\label{section:future-work}
+
+Una de las características que sería ideal agregar a una futura versión
+es la de control de versiones con Git. Agregar esta característica no
+sería trivial pero tampoco sería extremadamente difícil dado que existen
+librerías que lo facilitarían. Agregar esta funcionalidad permitiría a
+los desarrolladores mantener su código versionado y además permitiría la
+colaboración, por medio de repositorios compartidos.
+
+Agregar esta funcionalidad requeriría de interfaces que permitan al
+desarrollador seleccionar archivos para agregar al repositorio, crear
+nuevos ``commits'' (como se le conoce a los estados de código en
+versionamiento), descargar y subir cambios a repositorios remotos y
+poder (al menos) ver el historial del repositorio.
+
+Otra característica importante que se discutió antes es la de no
+necesitar ensamblar el proyecto constantemente. Brunch (el ensamblador
+que se utilizó en este trabajo) permite levantar un proceso que observa
+cambios en los archivos y ensambla el proyecto bajo demanda. Eso hace
+que el proceso de programar y probar los cambios sea mucho más continuo
+y simple. \textbf{\emph{Tal vez hablar más de esto?}}
+
+Una adición que podría ser de importancia en proyectos con archivos
+grandes sería la de no enviar el archivo completo cada vez que se
+guarden cambios. Este es el comportamiento actual y, si bien no se nota
+para archivos livianos, sí se sentiría al momento de guardar archivos de
+100 o más líneas de código. Una posible solución sería enviar parches,
+es decir, guardar en el frontend el estado en el que se encuentra el
+archivo en el servidor, y, al momento de guardar cambios, enviar sólo
+las diferencias de manera de minimizar la cantidad de información
+enviada. De esta forma, si se tuviera un archivo con 200 líneas de
+código y sólo se quisiera agregar 2 líneas con comentarios, se ahorraría
+un 99\% de cantidad de datos que se transfieran.
+
+Un cambio que no sería menor, y que está relacionado con la edición de
+vistas, es la de cambiar el framework que se utiliza para el desarrollo
+por una conocida como Knockback\footnote{Referencia.}. Knockback es una
+combinación de dos frameworks: Backbone (la que se utiliza actualmente)
+y Knockout. Knockout es conocido por ofrecer ``bindings'', es decir,
+permite agregar atributos HTML a las vistas de manera que se actualicen
+automáticamente, sin necesidad de escribir código dentro de ellas. Como
+por ejemplo:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{<p>}\NormalTok{First name: }\KeywordTok{<strong}\OtherTok{ data-bind=}\StringTok{"text: firstName"}\KeywordTok{></strong></p>}
+\KeywordTok{<p>}\NormalTok{Last name: }\KeywordTok{<strong}\OtherTok{ data-bind=}\StringTok{"text: lastName"}\KeywordTok{></strong></p>}
+\end{Highlighting}
+\end{Shaded}
+
+El fragmento anterior une las etiquetas
+\texttt{\textless{}strong\textgreater{}} con los atributos
+\texttt{firstName} y \texttt{lastName} del modelo asociado. Lo ventajoso
+es que es simple HTML y además las uniones son en tiempo real, lo que
+significa que cualquier cambio al modelo ocurrirá en la vista sin
+requerir ningún esfuerzo extra por parte del desarrollador.
+
+Esto mejoraría la experiencia del usuario al momento de diseñar vistas
+dado que no necesitaría escribir código (sólo HTML). Además, y más
+importante, esto permitiría mejorar el editor de interfaces de manera de
+que el usuario agregue ``bindings'' visualmente, con menús contextuales,
+sin editar el código fuente de la vista.
+
+Agregar este framework requeriría cierto esfuerzo, aunque Brunch
+facilita esta tarea permitiendo crear ``esqueletos'' para proyectos con
+este framework. Exportar proyectos ya existentes no sería trivial, pero
+tampoco sería muy complejo, dado que Knockback simplemente combina ambos
+frameworks.
+
+\clearpage
 \newpage
 
 \section{Referencias}

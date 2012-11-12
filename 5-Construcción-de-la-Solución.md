@@ -1,11 +1,10 @@
 # Construcción de la Solución
 
-Este capítulo tiene por objetivo detallar todo el proceso del diseño y desarrollo de la solución propuesta anteriormente. Se dividirá en los siguiente subcapítulos:
+Este capítulo tiene por objetivo detallar todo el proceso del diseño y desarrollo de la solución propuesta anteriormente. Se dividirá en los siguientes subcapítulos:
 
-  a. Diseño de la solución: básicamente se explicará cómo ambas componentes (frontend y backend) interactuarán entre sí. Además, cómo funcionarán ambas partes en términos de manipulación de archivos y el proyecto completo. Por último, se explicará cómo se diseñó el componente principal de la solución (el editor de interfaces).
-  b. Flujo del usuario: acá se explicarán algunos de los casos de uso de la aplicación, como el inicio de sesión, o el ensamblado de los proyectos.
-  c. Primera etapa de construcción: el desarrollo de la solución se dividió en dos etapas principalmente. Primero, se desarrolló lo que se denominó una "base" del programa. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
-  d. Segunda etapa de construcción: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es el grueso de la solución, se decidió dedicar una etapa completa a él.
+  a. Diseño de la solución: se explicará cómo ambas componentes (frontend y backend) interactuarán entre sí. Además, se describirá cómo funcionarán ambas partes en términos de manipulación de archivos y el proyecto completo. Por último, se explicará cómo se diseñó el componente principal de la solución (el editor de interfaces).
+  b. Primera etapa de construcción: el desarrollo de la solución se dividió en dos etapas. Primero, se desarrolló lo que se consideró una "base" del programa. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
+  c. Segunda etapa de construcción: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es la parte más importante de la solución, se decidió dedicar una etapa completa a él.
 
 ## Diseño de la Solución
 
@@ -198,6 +197,7 @@ En el caso del editor de vistas, se agregó un "canvas" (básicamente un espacio
 Otras vistas corresponden a el selector de proyectos, que se creó usando una ventana modal (que Twitter Bootstrap trae consigo). Ésta se mostraría en el momento que el usuario ingrese al programa. Ahí, podrá elegir algún proyecto en el que haya estado trabajando o crear uno nuevo directamente.
 
 ### Creación de Servicios en el Backend
+\label{section:create-services}
 
 Para poder crear las funcionalidades necesarias en el frontend, se decidió crear primero los servicios en el Backend. Éstos son los siguientes:
 
@@ -247,6 +247,8 @@ En las subsecciones siguientes se discutirán algunas de las implementaciones de
     // etc...
 ]
 ```
+
+El anterior es un fragmento de una respuesta del servidor al pedir los archivos en el directorio raíz de un projecto.
 
 #### Autentificación de Usuarios
 
@@ -380,12 +382,62 @@ end
 
 Se realiza la misma verificación que al momento de obtener el contenido. Si el archivo existe y no es una carpeta, se reemplaza todo el contenido directamente.
 
+El renombrado de archivos y carpetas se realiza con el siguiente método:
+
+```ruby
+def rename_file(path, new_path)
+  if FileTest.exists? self.full_path(path)
+    File.rename self.full_path(path), self.full_path(new_path)
+  end
+
+  directory = File.split(new_path).first
+
+  self.file_to_hash self.full_path(new_path), directory
+end
+```
+
+Se le pasan la ruta actual y la ruta nueva del archivo, y se devuelve la nueva representación de éste para actualizar el modelo en el frontend. La llamada a `File.rename` permite no sólo renombrar el archivo o directorio, sino que además permite cambiar su ruta.
+
 #### Ensamblado y Servidor de Pruebas
 
+Para realizar el ensamblado se utiliza Brunch. De manera muy similar a la creación de proyectos, es necesario ejecutar un comando de terminal desde Ruby. La diferencia con la creación, es que acá se necesita leer la salida del comando de manera de detectar si el ensamblado fue exitoso o no. Para esto, se utiliza un comando distinto de `system` como se vio antes.
+
+```ruby
+def build_project
+  output, result = ::Open3.capture2e "cd #{self.full_path} && brunch build"
+
+  {
+    :output => output,
+    :result => (output =~ /error/ || ! (output =~ /compiled/))
+  }
+end
+```
+
+La librería Open3^[http://www.ruby-doc.org/stdlib-1.9.3/libdoc/open3/rdoc/Open3.html] ejecutar comandos en el terminal con mayor flexibilidad. Dentro de los comandos que provee está `capture2e`, que devuelve el output de `stdout`y `stderr`  combinados. Esto es útil en esta situación dado que el ensamblado puede ser exitoso como no. De esta forma, se ejecuta el comando `brunch build`, y se revisa su output. Si éste contiene "error" o no contiene "compiled", significa que ocurrió algún error, y el output se envía al frontend para que sea mostrado.
+
+Para ejecutar el servidor, se utiliza un acercamiento similar:
+
+```ruby
+def run_project
+  output, result = ::Open3.capture2e "cd #{self.full_path} \
+                   && forever stop server.js #{self.port} \
+                   && forever start server.js #{self.port}"
+
+  {
+    :output => output,
+    :url => "#{Api::V1::App.settings.run_url}:#{self.port}",
+    :result => !(output =~ /Forever processing file/)
+  }
+end
+```
+
+Utilizando un programa llamado "forever"^[https://github.com/nodejitsu/forever], se ejecuta un script que ya se mencionó anteriormente (que además viene con el esqueleto utilizado por brunch al crear el proyecto). Este script levanta un servidor estático en el puerto que se especifique, y si la ejecución fue exitosa se retorna la información necesaria al frontend.
 
 
 
 ### Agregado de Funcionalidad al Prototipo del Frontend
+
+#### Selector de Proyectos
 
 Se comenzó por implementar el selector de proyectos. Para esto fue necesario  implementar el modelo y colección de proyectos. En esta etapa fueron implementados de la forma más simple posible. Básicamente, se crearon como dos clases que extienden a `Backbone.Model` y `Backbone.Collection` respectivamente. Dado que Backbone está diseñado para interactuar con APIs REST, no fue necesario configurar más que la URL del backend y especificar que la colección corresponde a una colección de Proyectos.
 
@@ -393,27 +445,95 @@ Se comenzó por implementar el selector de proyectos. Para esto fue necesario  i
 
 Luego de configurar el modelo y la colección, se agregó una ruta al enrutador de Backbone. El enrutador lee la URL del navegador e interpreta qué método llamar del enrutador. La idea es que se especifiquen las URL necesarias para la navegación de la aplicación. En el caso de esta solución, sólo existirán dos rutas principalmente. La primera será la ruta base, donde se cargará el selector de proyectos del cual se habla, y la segunda será la que tendrá cada proyecto. Por lo tanto, se configuró la URL base, y, en el método que es llamado, se inicializa la colección de proyectos.
 
-En este punto, la colección es pasada a una vista. Las vistas, como se explicó antes, son las encargadas de presentar datos al usuario (por medio de templates). Esta vista, básicamente, presenta una lista de proyectos y un formulario para crear uno nuevo (esta última funcionalidad se creará en la segunda etapa). 
+```coffeescript
+routes:
+  '': 'index'
 
-***AGREGAR SCREENSHOT DE CREAR UN PROYECTO***
+index: ->
+  # We load projects and show them on a modal window
+  projects = new Projects()
+  
+  projectsView = new ProjectsView(collection: projects)
+  $('body').append projectsView.render().el
+  $("##{projectsView.id}").modal
+    backdrop: 'static'
+    keyboard: false
 
-Al usuario hacer click en un proyecto existente, se llama a la segunda ruta ya mencionada. Esta ruta, toma el identificador de proyecto de la url (que tienen un formato estilo `proyects/IDENTIFICADOR`) e instancia un proyecto usando ese identificador. Una vez que se haya obtenido toda su información desde el servidor, se le asigna el modelo al proyecto (de manera que su instancia quede compartida) y se inicializa el visor de archivos (que es una vista) con éste.
-
-En este paso, se instancia el visor de archivos. El visor de archivos toma el modelo de proyecto y "pide" su carpeta raíz. El modelo hace una petición al backend, y éste contesta con una representación de cada archivo (o carpeta) del directorio raíz. A continuación un ejemplo de la respuesta del servidor:
-
+  projects.fetch()
 ```
-JSON ACA OH SI
+
+En el fragmento de código anterior puede verse el método `index` que es llamado  en este punto. Luego, la colección es pasada a una vista. Las vistas, como se explicó antes, son las encargadas de presentar datos al usuario (por medio de templates). Esta vista, básicamente, presenta una lista de proyectos y un formulario para crear uno nuevo (esta última funcionalidad se creará en la segunda etapa), como puede apreciarse en la Figura \ref{figures:projects-view}.
+
+![La ventana modal de selección de proyectos. \label{figures:projects-view}](figures/projects-view.png) 
+
+Al usuario hacer click en un proyecto existente, se llama a la segunda ruta en el enrutador:
+
+```coffeescript
+routes:
+  '': 'index'
+  'projects/:id': 'project'
+
+index: ->
+  # Omitido por brevedad.
+
+project: (id) ->
+  app.project = new Project(id: id)
+  app.project.fetch
+    success: =>
+      app.filebrowser.setModel app.project
+      Backbone.Mediator.pub 'status:set', "Project Loaded"
+
+  Backbone.Mediator.pub 'modal:hide'
 ```
 
-El visor de archivos, instancia una vista de archivo por cada uno de los documentos que responde el backend. La vista de archivo se encarga de mostrar el nombre y tipo de archivo, y permitir al usuario clickearlo para abrirlo o ver su contenido. En caso de que el archivo se trate de un directorio, la vista de archivo se encarga de mostrar sus contenidos. Esta parte resultó ser un poco complicada de implementar, dado que lo que se necesita es básicamente mostrar el mismo tipo de vista que la raíz del proyecto pero para un subproyecto. Lo que se hizo en este caso es lo siguiente: cuando el usuario hace click en un directorio, se instancia una colleción de archivos con la ruta a ese directorio. Se hace una petición al servidor para que entregue la lista de archivos en esa carpeta y se instancian vistas de archivo para cada uno, embebiéndolas en la misma vista del directorio que se acaba de clickear. En la Figura \ref{figure:file-browser} se puede apreciar el concepto. La carpeta `app` es una vista de archivo, y contiene todos los archivos y carpetas dentro de su recuadro. Lo mismo pasa con el directorio `models`.
+Esta ruta, toma el identificador de proyecto de la url (que tienen un formato estilo `proyects/IDENTIFICADOR`) e instancia un proyecto usando ese identificador. Una vez que se haya obtenido toda su información desde el servidor, se le asigna el modelo a la aplicación (de manera que su instancia quede compartida) y se inicializa el visor de archivos (que es una vista) con éste.
+
+El visor de archivos toma el modelo de proyecto y "pide" su carpeta raíz. El modelo hace una petición al backend, y éste contesta con una representación de cada archivo (o carpeta) del directorio raíz. La respuesta a esta llamada se presentó en la Sección \ref{section:create-services}.
+
+El visor de archivos, instancia una vista de archivo por cada uno de los documentos que responde el backend. La vista de archivo se encarga de mostrar el nombre y tipo de archivo, y permitir al usuario clickearlo para abrirlo o ver su contenido. En caso de que el archivo se trate de un directorio, la vista de archivo se encarga de mostrar sus contenidos. Esta parte resultó ser un poco complicada de implementar, dado que lo que se necesita es básicamente mostrar el mismo tipo de vista que la raíz del proyecto pero para un subproyecto. Lo que se hizo en este caso es lo siguiente: cuando el usuario hace click en un directorio, se instancia una colección de archivos con la ruta a ese directorio. Se hace una petición al servidor para que entregue la lista de archivos en esa carpeta y se instancian vistas de archivo para cada uno, embebiéndolas en la misma vista del directorio que se acaba de clickear. En la Figura \ref{figure:file-browser} se puede apreciar el concepto. La carpeta `app` es una vista de archivo, y contiene todos los archivos y carpetas dentro de su recuadro. Lo mismo pasa con el directorio `models`.
 
 ![El visor de archivos: cada vista de directorio contiene más vistas de archivos de ser necesarias. \label{figure:file-browser}](figures/file-browser.png)
 
 En caso de que el usuario haga click en un archivo, se le pasa la instancia del modelo al editor de código, el cual indica al modelo que debe pedir el contenido del archivo al servidor para mostrarlo. El editor de código es simplemente una librería llamada CodeMirror que permite al usuario editar el contenido de los archivos. El editor de código se encarga además de indicarle al modelo del archivo que guarde su contenido en el backend si el usuario lo solicita.
 
-***NO SE SI EXPLICAR MÁS DE LO ANTERIOR***
+***EXPLICAR MÁS DE LO ANTERIOR***
 
 Para esta etapa de la construcción, se incluyó además la posibilidad de ensamblar y ejecutar el proyecto. Para esto, se agregaron métodos en el modelo de proyectos que hace llamadas al backend para ensamblar y ejectuar el servidor de pruebas. El evento es manejado por la barra de navegación, que incluye varios elementos de menú que por esta etapa se mantuvieron inactivos. A la derecha de la barra de navegación se encuentra un botón que permite ensamblar y ejecutar el proyecto con un sólo click, y otros dos que permiten ejecutarlo y ensamblarlo por separado.
+
+En esta etapa se agregaron además atajos de teclado. Para esto se utilizó una librería Javascript llamada Mousetrap^[link!]. Esta librería permite configurar muy fácilmente atajos de teclado con una gran flexibilidad en términos de combinaciones de teclas. Por ejemplo, si se quisiera agregar un atajo de teclado para guardar el archivo actual, se puede hacer lo siguiente:
+
+***CORROBORAR ESTO***
+
+```coffeescript
+Mousetrap.bind ["ctrl+s", "command+s"], ->
+  # Guardar el archivo
+```
+
+Esto permite que el usuario use la combinación "CTRL+S" o bien, en computadores Mac, "COMMAND+S". Es posible agregar atajos de teclado más complejos, como "CTRL+ALT+S" o "CTRL+SHITF+S", etc. Incluso, es posible saber si el usuario está manteniendo presionada alguna tecla. Por ejemplo, si se quiere saber si el usuario está manteniendo presionada la tecla "SHIFT", se puede hacer de la siguiente forma:
+
+***PONER EXTRACTO DE CÓDIGO ACA***
+
+Utilizando esta librería, se agregaron varios atajos de teclado en esta etapa. Entre ellos:
+
+- Guardar archivo actual: `CTRL+S`
+- Cerrar el archivo actual: `CTRL+W`
+- Ejecutar el proyecto: `CTRL+R`
+- Cambiar entre archivos abiertos: `CTRL+NUMERO`
+
+Este último atajo mencionado permite al usuario cambiar entre los archivos que están abiertos en la lista de la derecha, sin tener que mover sus manos del teclado básicamente. La mayoría de los editores de código permiten cambiar rápidamente entre los archivos abiertos de esta manera.
+
+La mayoría de los atajos de teclado son interpretados por el navegador. El atajo para guardar, para cambiar entre archivos abiertos, todos ellos son atajos que el navegador utiliza internamente. Para evitar que el navegador los interpretara, se utilizó el siguiente método:
+
+```coffeescript
+Moustrap.bind ["ctrl+s"], (event) ->
+  event.prevendDefault()
+  
+  # Guardar el archivo
+```
+
+Cada "evento" que es generado en Javascript, normalmente es pasado a los callbacks. En este caso, es posible llamar al método `preventDefault()` del evento, lo que indica al navegador que no realice la acción por defecto que debería. Si no se llamara a este método, el archivo de todas formas se guardaría, pues el evento se está llamando de todas formas, pero el navegador también mostraría la ventana de "Guardar Página" que por defecto se mostraría en cualquier otro caso, y eso no es lo que se quiere en una aplicación web de este estilo.
+
+
 
 ## Segunda Etapa de Construcción
 
@@ -514,6 +634,8 @@ Con estas llamadas, al momento de que el usuario esté sobre un elemento ("over"
 Por último, el editor de templates también debería permitir al usuario editar el código directamente, en caso de que no exista algún componente o bien se necesite agregar cierta lógica más allá de HTML. Para esto, se utilizó el mismo editor de código que para los archivos normales. Se agregaron dos pestañas en la parte superior del editor de templates que permiten cambiar entre el editor visual y el código fuente (ver Figura \ref{figure:html-editor}).
 
 ![Estas pestañas permiten al usuario cambiar entre el modo visual y el editor HTML \label{figure:html-editor}](figures/html-editor.png)
+
+***CONTENTEDITABLE!!!***
 
 
 [^backbone-colection]: En Backbone, existen modelos y, a su vez, colecciones de modelos. Las colecciones son básicamente un conjunto de instancias de un tipo de modelo. Por ejemplo, en el caso de este trabajo, existirán colecciones de *archivos*.
