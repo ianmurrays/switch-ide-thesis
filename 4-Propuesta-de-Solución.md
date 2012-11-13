@@ -1,14 +1,29 @@
 # Propuesta de Solución
 
-Para solucionar el problema identificado, se propone una herramienta web, basada en *Backbone* y *Ruby*, que permita editar una aplicación web completa en el mismo navegador. Sus principales características serían:
+Para solucionar el problema identificado, se propone una herramienta web (es decir, que sea accesible desde el navegador, y no una aplicación nativa), que permita editar una aplicación web completa en el mismo navegador, junto con permitir al desarrollador crear templates de manera visual, en vez de utilizar sólo código. 
 
-- Dar una estructura a las aplicaciones que se desarrollen con Backbone
-- Facilitar la creación de vistas mediante un editor que permita arrastrar los diferentes componentes y ahorrar el tiempo gastado en ello
-- Implementar atajos de teclado de manera similar a cómo lo haría una IDE de escritorio
+## Requisitos
+
+Principalmente, la herramienta debería:
+
+- Dar una estructura a las aplicaciones web, evitando que el desarrollador programe la aplicación completa en un sólo archivo
+- Facilitar la creación de vistas mediante un editor que permita arrastrar los diferentes widgets a un "canvas"
 - Permitir ensamblar y probar la aplicación de manera similar a cómo lo haría un programa nativo
 
-La herramienta no puede funcionar sólo de lado de cliente (exclusivamente en el navegador), dado que algunas funciones deben ser ejecutadas en el servidor, como por ejemplo la compilación de los archivos Javascript y levantar una instancia de un servidor para probar lo que el usuario esté desarrollando. Por esto, es necesario implementar este proyecto en dos partes distintas, pero dependientes.
+Una herramienta con tales características no podría funcionar sólo de lado de cliente (exclusivamente en el navegador), dado que algunas funciones tendrían ser ejecutadas en el servidor, como por ejemplo la compilación de los archivos Javascript o levantar una instancia de un servidor para probar lo que el usuario esté desarrollando. Por esto, es necesario implementar este proyecto en dos componentes distintas, pero dependientes.
 
+A continuación, se especificará qué roles cumplirán backend y frontend en la herramienta propuesta.
+
+### Definición y Requisitos del Backend
+
+El backend cumplirá con las siguientes tareas:
+
+- Deberá generar los proyectos y sus estructuras (directorios y archivos base)
+- Manipular los archivos, es decir, crear, eliminar, renombrar y actualizar archivos y carpetas
+- Ensamblar los proyectos
+- Levantar servidores que permitan al desarrollador hacer pruebas 
+
+<!-- ----------------------------- -->
 <!--Salto de linea aca??-->
 
 Por un lado, se tiene el servidor, que tendrá la tarea de manipular los archivos de cada proyecto que el usuario cree y desarrolle. Además, tendrá la tarea de ejecutar ciertos comandos necesarios para la creación y prueba de los proyectos, que simplemente no es posible ejecutar en el navegador. El hecho de que exista un "backend" (como se le llamará de ahora en adelante), permite además dar lugar a futuras características imposibles de llevar a cabo de otra forma, como por ejemplo soporte para repositorios Git, que deben ser manejados en el servidor exclusivamente.
