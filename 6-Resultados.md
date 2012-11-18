@@ -16,16 +16,89 @@ Además, está la posibilidad de ensamblar y probar el proyecto desde la misma I
 
 ## Modo de Uso de la Herramienta
 
-***Escribir acá un pequeño manual de cómo usar Switch***
+En esta sección se describirá cómo utilizar la herramienta. Es importante mencionar que la solución propuesta está pensada para usuarios que ya tengan conocimientos para programar en Backbone, por lo que no se explicará cómo desarrollar con este framework.
 
-### Cómo Crear un Proyecto
+### Creación y Selección de Proyectos
 
-### Cómo Crear y Editar Archivos
+Al ingresar por primera vez, al desarrollador se le presenta la ventana de selección de proyectos. En ella, se mostrarán los proyectos existentes y un pequeño formulario que le permitirá crear un proyecto nuevo.
 
-### Cómo Editar Vistas
+Para abrir un proyecto existente, basta con clickear en uno de ellos (número 1 de la Figura \ref{figures:tutorial-projects}). Si el usuario deseara crear un proyecto nuevo, puede escribir el nombre de éste en el formulario de abajo y presionar "Create" (número 2 de la Figura \ref{figures:tutorial-projects}).
 
-### Cómo Correr el Proyecto
+![El selector de proyectos. El usuario puede abrir un proyecto existente (1) o crear uno nuevo (2). \label{figures:tutorial-projects}](figures/tutorial-projects.png)
 
+En ambos casos, se abrirá el proyecto y el usuario será presentado con la vista principal de la aplicación.
+
+### Manejo de Archivos y Carpetas
+
+El usuario puede realizar acciones básicas sobre los archivos. Para crear un archivo nuevo, basta con hacer click secundario sobre el directorio donde se desee crear uno y seleccionar "New File" (ver Figura \ref{figures:tutorial-new-file}). Se mostrará una ventana modal en donde el usuario podrá escribir el nombre del archivo nuevo, como se puede ver en la Figura \ref{figures:tutorial-new-file-prompt}. En caso de que el usuario escoja un nombre que se encuentre en uso, el sistema le alertará correspondientemente.
+
+![El menú contextual que aparece al hacer click derecho sobre un archivo o directorio.\label{figures:tutorial-new-file}](figures/tutorial-new-file.png)
+
+![La ventana modal que permite al usuario escribir el nombre de un archivo (o directorio) nuevo.\label{figures:tutorial-new-file-prompt}](figures/tutorial-new-file-prompt.png)
+
+El procedimiento es casi idéntico para la creación de directorios, con la única diferencia de que el usuario deberá escoger "New Folder" desde el menú contextual que se muestra en la Figura \ref{figures:tutorial-new-file}.
+
+Para renombrar archivos y directorios, se debe hacer click derecho sobre éste y presionar "Rename". El nombre del archivo se convertirá en un campo de texto donde el usuario podrá escribir el nombre nuevo. Para finalizar el renombrado bastará con presionar la tecla ENTER. En la Figura \ref{figures:tutorial-rename} puede verse el campo de texto que aparece al renombrar un directorio.
+
+![Al renombrar un directorio o archivo aparece un campo de texto para cambiar el nombre. \label{figures:tutorial-rename}](figures/tutorial-rename.png)
+
+Para eliminar archivos y directorios, debe seleccionarse la opción "Delete" del menú contextual. Se presenta una confirmación, especificando qué archivo o carpeta se eliminará, como se ve en la Figura \ref{figures:tutorial-confirm}.
+
+![Se le pide confirmación al usuario antes de eliminar algún archivo o carpeta. \label{figures:tutorial-confirm}](figures/tutorial-confirm.png)
+
+### Edición de Archivos
+
+Para abrir un archivo, se debe hacer click en él. Se cargará el editor de código a la derecha, mostrando los contenidos de éste. Ahí, el usuario puede hacer los cambios que sean necesarios. En la Figura \ref{figures:tutorial-code} puede verse el editor de código al abrir un archivo.
+
+![El editor de código al abrir el archivo `application.coffee` de un proyecto. \label{figures:tutorial-code}](figures/tutorial-code.png)
+
+Para guardar los cambios, el usuario puede presionar `CTRL+S` en el teclado. Una vez que el archivo se haya guardado correctamente, se verá un mensaje arriba a la derecha, en la barra de navegación (ver Figura \ref{figures:tutorial-message}).
+
+![Mensaje que aparece en la esquina superior derecha al guardarse exitosamente un archivo. \label{figures:tutorial-message}](figures/tutorial-message.png)
+
+En caso de que el usuario abriera otro archivo sin antes haber guardado los cambios, el sistema automáticamente guardará los cambios por él antes de cambiar al siguiente archivo.
+
+### Edición de Templates
+
+Cuando el usuario hace click en un template (archivos denotados con un ícono específico en el explorador de archivos, ver Figura \ref{figures:tutorial-template-icon}), se carga el editor de interfaces en vez del editor de código simple.
+
+![El ícono que diferencia los archivos de código de los templates. \label{figures:tutorial-template-icon}](figures/tutorial-template-icon.png)
+
+El editor de interfaces muestra el contenido del template en vivo, y permite al usuario arrastrar widgets de la barra lateral derecha hacia el canvas. Por ejemplo, en la Figura \ref{figures:tutorial-drag}, puede verse cómo se arrastra un componente llamado "Prepended Input" a un formulario de registro en el canvas.
+
+![Arrastrando un componente hacia un formulario de registro en el editor de templates. \label{figures:tutorial-drag}](figures/tutorial-drag.png)
+
+También es posible editar el HTML que se va generando con el editor. Por ejemplo, en caso de que el desarrollador desee agregar un atributo de clase o un identificador, puede hacerlo usando el editor de HTML. Para acceder a él, es posible presionar las teclas `CTRL+ALT+FLECHA ARRIBA` o bien utilizar las pestañas presentes arriba del canvas (ver Figura \ref{figures:tutorial-html}).
+
+![En el recuadro pueden verse las pestañas que permiten cambiar entre el modo de edición de HTML y el editor visual. \label{figures:tutorial-html}](figures/tutorial-html.png)
+
+### Ejecutar el Proyecto
+
+La ejecución del proyecto consiste en ensamblarlo y ejecutarlo. Existen varias formas de hacer esto. Si se desea ensamblar y ejecutar el proyecto de una vez, puede presionarse `CTRL+R` en el teclado o bien presionar el botón "Build & Run" en la esquina superior derecha. En ambos casos, se mostrará el progreso en la misma esquina, como puede verse en la Figura \ref{figures:tutorial-build}.
+
+![El botón para ensamblar y ejecutar, junto con la barra de progreso. \label{figures:tutorial-build}](figures/tutorial-build.png)
+
+En caso de necesitar sólamente ensamblar o ejecutar (de forma independiente), es posible, clickeando la flecha al costado del botón "Build & Run". Esto mostrará un menú contextual con ambas opciones, como se ve en la Figura \ref{figures:tutorial-contextual}.
+
+![El menú contextual con las opciones para ensamblar, ejecutar y archivar el proyecto. \label{figures:tutorial-contextual}](figures/tutorial-contextual.png)
+
+En caso de que el ensamblado falle, se mostrará una ventana con el detalle del error, como se puede ver en la Figura \ref{figures:tutorial-error}.
+
+![La ventana modal que se muestra al ocurrir un error de ensamblado. \label{figures:tutorial-error}](figures/tutorial-error.png)
+
+### Archivado del Proyecto
+
+Una vez que el proyecto se encuentre finalizado o listo para ser subido a un servidor, se deberá "archivar". Esta opción ensambla el proyecto, con la diferencia de además minificar los archivos Javascript y CSS generados, efectivamente optimizándolos para producción. Al presionar esta opción, que puede verse en la Figura \ref{figures:tutorial-contextual}, el servidor ensambla y comprime el proyecto en un archivo ZIP, que luego comienza a descargarse.
+
+### Otras Características
+
+Existen algunas características extra disponibles para el desarrollador, que no se discutieron en detalle  en el proceso de construcción.
+
+El usuario tiene la posibilidad de reordenar la lista de archivos abiertos, simplemente arrastrándolos. Esta característica se une a los atajos de teclado que permiten cambiar entre archivos abiertos, presionando las teclas `CTRL+NÚMERO` donde `NÚMERO` es un número entre 1 y 9.
+
+Además, para cerrar un archivo, es posible presionar `CTRL+W`.
+
+<!--
 ## Criterios de Evaluación
 
 La idea original de este proyecto era facilitar la creación de interfaces y ahorrar el tiempo que se invierte en su creación. La evaluación de la herramienta se basará en esto. Se crearán distintas interfaces, como formularios, tablas o paneles de información, y se medirá cuánto tiempo se requiere para crear tales interfaces usando Switch y codificándolas directamente.
@@ -71,3 +144,4 @@ En el Cuadro \ref{table:times} se resumen los tiempos invertidos en la construcc
 Puede verse que hay un ahorro considerable de tiempo en varias de las interfaces, y, obviamente, mientras más complejo sea lo que se quiere construir, más tiempo es el que se ahorra.
 
 Cabe mencionar, que al construir las interfaces manualmente, el autor tiene práctica al construir interfaces con Twitter Bootstrap, por lo que podría darse que en casos reales el ahorro sea mayor aún.
+-->

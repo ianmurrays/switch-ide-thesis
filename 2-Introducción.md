@@ -12,12 +12,18 @@ Desarrollar aplicaciones web versus desarrollar aplicaciones nativas (que son ej
 
 Ahora bien, desarrollar aplicaciones web también tiene sus desventajas. Es cosa de ver Xcode o Visual Studio, donde ambas herramientas son un entorno completamente integrado para desarrollar aplicaciones. Desde escribir código a crear formularios y diferentes tipos de vistas, ambas herramientas (y otras similares) entregan una experiencia casi inigualable al desarrollador. Al desarrollar aplicaciones y sitios web en general, no es posible encontrar herramientas que se asemejen lo suficiente a las mencionadas (y que sean de código abierto) como para considerarse una alternativa viable. La mayoría de los entornos de desarrollo para web permiten previsualizar lo que el desarrollador codifica, pero no le permiten ahorrar tiempo al momento de realizar tareas tan necesarias como codificar la interfaz de una aplicación.
 
-Es este último aspecto el que se considera como un problema actualmente en el mundo del desarrollo web. Si bien no es difícil codificar interfaces de usuario al momento de crear aplicaciones web, es una tarea que consume tiempo y para la cual sí existen herramientas muy buenas en el mundo del desarrollo de aplicaciones nativas (como las ya mencionadas Xcode o Visual Studio). Es por esto que en este trabajo se propone la creación de un entorno de desarrollo integrado que permita la creación de aplicaciones web facilitando la creación de interfaces de manera similar a las herramientas descritas anteriormente.
+Es este último aspecto el que se considera como un problema actualmente en el mundo del desarrollo web. Si bien no es difícil codificar interfaces de usuario al momento de crear aplicaciones web, es una tarea que consume tiempo y para la cual sí existen herramientas muy buenas en el mundo del desarrollo de aplicaciones nativas (como las ya mencionadas Xcode o Visual Studio). 
 
-Este trabajo se estructurará como sigue:
+## Objetivos
 
-- Se revisará primero el *estado del arte*, analizando las herramientas que actualmente intentan dar solución al problema identificado, además de frameworks y otro tipo de utilidades que mitigan de cierta forma el problema pero sin darle una completa solución.
-- Luego se propondrá una solución al problema identificado, junto con métricas que permitirán cuantificar la efectividad de la solución creada.
-- Se construirá y documentará la creación de la solución planteada.
+En este trabajo se propone la creación de un entorno de desarrollo integrado, al que se le llamará **Switch IDE**, que permita el desarrollo de aplicaciones web facilitando la creación de interfaces de manera similar a las herramientas descritas anteriormente.
+
+## Estructura de este Trabajo
+
+El trabajo se estructurará como sigue:
+
+- En el Capítulo \ref{section:state-of-the-art} se revisará primero el estado del arte, analizando las herramientas que actualmente intentan dar solución al problema identificado, además de frameworks y otro tipo de utilidades que mitigan de cierta forma el problema pero sin darle una completa solución.
+- Luego, en el Capítulo \ref{section:solution-proposal} se propondrá una solución al problema identificado.
+- Se construirá y documentará la creación de la solución planteada en el Capítulo \ref{section:construction}.
 - Se analizarán los resultados utilizando métricas que se describirán en el Capítulo \ref{sections:results}.
-- Finalmente se presentarán conclusiones del trabajo junto con ideas para posible trabajo futuro.
+- Finalmente, en el Capítulo \ref{section:conclusion} se presentarán conclusiones del trabajo junto con ideas para posible trabajo futuro.

@@ -1,47 +1,19 @@
 # Construcción de la Solución
 
+\label{section:construction}
+
 Este capítulo tiene por objetivo detallar todo el proceso del diseño y desarrollo de la solución propuesta anteriormente. Se dividirá en los siguientes subcapítulos:
 
-  a. Diseño de la solución: se explicará cómo ambas componentes (frontend y backend) interactuarán entre sí. Además, se describirá cómo funcionarán ambas partes en términos de manipulación de archivos y el proyecto completo. Por último, se explicará cómo se diseñó el componente principal de la solución (el editor de interfaces).
-  b. Primera etapa de construcción: el desarrollo de la solución se dividió en dos etapas. Primero, se desarrolló lo que se consideró una "base" del programa. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
-  c. Segunda etapa de construcción: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es la parte más importante de la solución, se decidió dedicar una etapa completa a él.
+  - Introducción a Backbone: se introducirán algunos de los conceptos necesarios para entender cómo funciona Backbone.
+  - Diseño de la solución: se explicará cómo ambas componentes (frontend y backend) interactuarán entre sí. Además, se describirá cómo funcionarán ambas partes en términos de manipulación de archivos y el proyecto completo. Por último, se explicará cómo se diseñó el componente principal de la solución (el editor de interfaces).
+  - Construcción de la base: el desarrollo de la solución se dividió en dos etapas. Primero, se desarrolló lo que se consideró una "base" del programa. Esta etapa contempló el desarrollo de gran parte del backend y, en el frontend, una herramienta que permitiera crear proyectos nuevos, crear, editar y eliminar archivos, compilar y correr el proyecto. 
+  - Construcción del editor de interfaces: la segunda parte del desarrollo se enfocó en desarrollar y perfeccionar el editor de interfaces. Dado que este componente es la parte más importante de la solución, se decidió dedicar una etapa completa a él.
 
-## Diseño de la Solución
+## Introducción a Backbone
 
-### Backend
-
-La solución es una aplicación mayoritariamente de lado de cliente, por lo que la mayor cantidad de lógica debe ir en este lado. Por esta razón, se diseñó el servidor de la forma más simple posible. Las tareas principales que tiene el servidor o backend de la aplicación son:
-
-  - Autentificar usuarios
-  - Generar proyectos utilizando Brunch
-  - Manipular los archivos. Esto incluye crear, eliminar, renombrar y actualizar archivos (o sea, recibir el contenido de ellos y guardarlo a disco)
-  - Ensamblar el proyecto
-  - Levantar un servidor estático que permita al usuario probar su proyecto
-
-Algunas de estas tareas son realizadas por la utilidad Brunch, por lo que sólo es necesario hacer que el servidor ejecute un comando en la consola para llevarlas a cabo. El resto de las tareas son básicamente manipulación de archivos, para lo cual cualquier lenguaje de programación trae funciones o librerías (y Ruby no es ninguna excepción).
-
-Se decidió utilizar una aproximación a lo que es REST^[explicar esto] para los servicios que proveerá el backend. En REST, la idea es representar objetos, y exponer diferentes métodos para tales objetos. En este caso, se decidió que deben existir 3 objetos diferentes: usuarios, proyectos y archivos. 
-
-  - Usuarios: dado que la idea es que varios usuarios puedan utilizar el sistema a la vez, debe existir esta entidad en el servidor (y por ende en la base de datos).
-  - Proyectos: es casi la base de todo. Cada proyecto contendrá los diferentes archivos y carpetas, y pertenecerá a un usuario.
-  - Archivos: esto se refiere a archivos y carpetas. Por la forma en la que se manipulan los archivos en el servidor y en el cliente, es más conveniente manejarlos de (casi) la misma forma. Esto último se refiere a la forma en la que se obtienen los archivos en el servidor, y las acciones que se realizan en ellos. Ambos archivos y carpetas se crean y eliminan, como también se renombran. La única diferencia substancial es que las carpetas no tienen contenido y no se actualizan como el resto de los archivos.
-
-El servidor autentificará a los usuarios utilizando sus cuentas de GitHub y OAuth. OAuth es un protocolo de autentificación y autorización que permite al usuario registrarse e ingresar a la aplicación con un sólo click  (dos si ingresa por primera vez). Dado que esta es una herramienta enfocada a programadores, y considerando que GitHub es una plataforma conocida por cualquier desarrollador que se mantenga al día, utilizar este sistema para autentificar a los usuarios es simple y conveniente. Por el lado de servidor, basta con incluir una librería que redirige a los usuarios a las URLs específicas y crear un registro en la base de datos si es que el usuario está ingresando por primera vez.
-
-### Frontend
-
-El frontend tendrá dos tareas principalmente. Primero, deberá permitir a los usuarios autentificarse. Para esto, y para efectos del presente trabajo, será una simple página web que redirija al usuario a GitHub para autentificarse usando este sistema. Segundo, deberá proveer al usuario con la IDE que se quiere construir en este documento.
-
-***EXPLICAR DE QUÉ TRATA LA PÁGINA DE AUTENTIFICACIÓN A GRANDES RASGOS, SCREENSHOTS Y TODO***
-
-La IDE misma se dividirá en tres componentes principales: la barra lateral izquierda para explorar los archivos del proyecto, la barra lateral derecha con componentes visuales (como botones, formularios, etc.), y la sección central que contendrá el código del archivo actualmente seleccionado o la vista previa en caso de estar editando una vista.
-
-Contará además con una barra superior con un menú (al igual que cualquier aplicación de escritorio), pero dado que proveerá simples accesos directos a funciones que se explicarán más adelante no se detallará su diseño ni implementación.
-
-#### Definición de Objetos
 \label{section:object-definition}
 
-En esta sección se pretende explicar qué objetos existirán en el frontend, sus responsabilidades y cómo interactuarán entre ellos. Primero se definirán algunos conceptos necesarios para entender de qué tipos de objetos se estará hablando.
+Dado que en las secciones que siguen se hablará mucho sobre Backbone, se definirán algunos de los conceptos detrás de este framework de manera que el lector pueda entender de lo que se está hablando.
 
 Modelo
   ~ Representa un objeto en un proyecto, como por ejemplo un archivo, una carpeta o el proyecto mismo. Cada modelo es responsable de persistir su estado de alguna forma (comunicándose con un servidor o almacenando datos en el mismo navegador).
@@ -54,19 +26,65 @@ Vista
   
 Template
   ~ Un template es un trozo de HTML que una vista utiliza para generar lo que el usuario ve. Si bien no son enteramente necesarias y una vista podría generar todo lo que necesita con Javascript, hacen la tarea algo más fácil. Contrario a lo que pueda suponerse, el editor visual en el que se trabajará en este documento editará los templates, y no las vistas. 
+  
+Enrutador
+  ~ En Backbone, las diferentes URL por las que navegue el usuario son manejadas por el enrutador. Éste define las rutas que son soportadas por el sistema y se encarga de instancias modelos y vistas necesarios para mostrarlos correctamente.
+
+## Diseño de la Solución
+
+### Backend
+
+La solución es una aplicación mayoritariamente de lado de cliente, por lo que la mayor cantidad de lógica debe ir en este lado. Por esta razón, se diseñó el servidor de la forma más simple posible. Las tareas principales que tiene el servidor o backend de la aplicación son:
+
+Algunas de las tareas que debe llevar a cabo son realizadas por la utilidad Brunch, por lo que sólo es necesario hacer que el servidor ejecute un comando en el terminal. El resto de las tareas son básicamente manipulación de archivos, para lo cual Ruby trae funciones y librerías.
+
+<!--
+Se decidió utilizar una aproximación a lo que es REST^[explicar esto] para los servicios que proveerá el backend. En REST, la idea es representar objetos, y exponer diferentes métodos para tales objetos. En este caso, se decidió que deben existir 2 objetos diferentes: proyectos y archivos. 
+-->
+
+El backend proveerá una interfaz REST^[link o algo] para el frontend, principalmente porque Backbone está diseñado para interactuar con APIs de este estilo. En APIs que funcionan con esta metodología, se exponen objetos y sus métodos a requests HTTP, de manera que para obtener información de un proyecto, por ejemplo, el frontend (o cualquier cliente que esté utilizando la API) debe hacer un request como se ve en la Figura \ref{figures:rest}.
+
+![Petición de detalles sobre el proyecto con el identificador "1234". \label{figures:rest}](figures/rest.png)
+
+Por lo tanto, para estructurar la API que expondrá el backend, se definieron 2 tipos de objetos:
+
+  - Proyectos: es casi la base de todo. Cada proyecto contendrá los diferentes archivos y carpetas.
+  - Archivos: esto se refiere a archivos y carpetas. Por la forma en la que se manipulan los archivos en el servidor y en el cliente, es más conveniente manejarlos de (casi) la misma forma. Esto último se refiere a la forma en la que se obtienen los archivos en el servidor, y las acciones que se realizan en ellos. Ambos archivos y carpetas se crean y eliminan, como también se renombran. La única diferencia substancial es que las carpetas no tienen contenido y no se actualizan como el resto de los archivos.
+
+De esta forma, el frontend podrá consultar sobre listas de proyectos, detalles sobre cada proyecto (o cualquier método que se exponga, como ensamblar el proyecto) y manipular archivos.
+
+En la Figura \ref{figures:rest-diagram} puede apreciarse el diseño del backend y las interacciones entre sus diferentes componentes. Por una parte, se tiene el servicio web REST, que expone dos tipos de objectos, los proyectos y los archivos. Ambos utilizan el modelo de proyecto para obtener lo necesario. Por otra parte, el modelo de proyecto utiliza información guardada en MongoDB (como el nombre del proyecto y su ruta en el sistema) para manipular archivos directamente utilizando librerías de Ruby.
+
+![Interacción entre diferentes componentes en el backend. \label{figures:rest-diagram}](figures/rest-diagram.png)
+
+### Frontend
+
+<!--
+La IDE misma se dividirá en tres componentes principales: la barra lateral izquierda para explorar los archivos del proyecto, la barra lateral derecha con componentes visuales (como botones, formularios, etc.), y la sección central que contendrá el código del archivo actualmente seleccionado o la vista previa en caso de estar editando una vista.
+
+Contará además con una barra superior con un menú (al igual que cualquier aplicación de escritorio), pero dado que proveerá simples accesos directos a funciones que se explicarán más adelante no se detallará su diseño ni implementación.
+-->
+
+Se comenzará por definir los diferentes objetos que existirán en el frontend. Se definirán diferentes modelos, colecciones y vistas, por lo que se recomienda revisar la Sección \ref{section:object-definition} para sus significados.
+
+#### Definición de Objetos
 
 ##### Modelos y Colecciones
 
-A continuación se explicará a grandes rasgos los modelos y colecciones que existirán en el frontend. Se tendrán modelos para los proyectos y los archivos. Cada uno se encargará de comunicarse con el backend para obtener los datos que le sean necesarios o bien para guardar los cambios. 
+A continuación se explicará a grandes rasgos los modelos y colecciones que existirán en el frontend. Se tendrán modelos para los proyectos y los archivos. Cada uno se encargará de comunicarse con el backend para obtener los datos que le sean necesarios o bien para guardar los cambios.
 
 El modelo de proyecto
   ~ Guardará el nombre de éste y una referencia a una colección de los archivos que se encuentren en la raíz de su carpeta. Tendrá como responsabilidades crear archivos y carpetas, ensamblar el proyecto e iniciar el servidor de pruebas. Estas acciones se complementan con llamadas al backend que realizan las tareas mismas.
 
 El modelo de archivo
-  ~ Se encargará de guardar el nombre y el contenido (en caso de que corresponda) del archivo o carpeta al que representa, además de guardar una referencia al proyecto al que pertenece y . Tendrá como responabilidades pedir su contenido, actualizarlo, renombrar y eliminar el archivo del sistema. Todas estas acciones se complementan además con llamadas al backend.
+  ~ Se encargará de guardar el nombre y el contenido (en caso de que corresponda) del archivo o carpeta al que represente, además de guardar una referencia al proyecto al que pertenece y a una colección de archivos en caso de ser un directorio. Tendrá como responabilidades pedir su contenido, actualizarlo, renombrar y eliminar el archivo del sistema. Todas estas acciones se complementan además con llamadas al backend.
 
 La colección de archivos
   ~ Tendrá como responsabilidad ordenar las listas de archivos una vez que la haya obtenido (además de guardar una referencia a cada modelo de archivo que le corresponda). Ordenar las listas de archios es importante pues el backend arroja una lista de archivos ordenada alfabéticamente, pero, dado que archivos y directorios son considerados de la misma forma en el backend, es necesario ordenar la lista de manera que los directorios queden arriba. Esto facilita encontrar archivos para el usuario.
+  
+Como se ve en la Figura \ref{figures:frontend-models}, instancias de un proyecto tendrán una colección de archivos base (representando el directorio raíz), y estas colecciones contendrán instancias de archivos (que pueden ser archivos o carpetas). En caso de ser un directorio, guardaría una instancia a una colección de archivos.
+  
+![Relaciones entre modelos y colecciones en el frontend. \label{figures:frontend-models}](figures/frontend-models.png)
 
 ##### Vistas
 
@@ -76,7 +94,7 @@ Explorador de Archivos
   ~ se colocará en la barra lateral izquierda, y tendrá dos listas de archivos. Una lista de archivos actualmente abiertos y la lista de archivos y directorios en el proyecto. Tendrá entre sus responsabilidades mantener una lista de archivos que se encuentran actualmente abiertos para que el usuario pueda navegar entre ellos.
 
 Archivo
-  ~ Esta vista representará a un archivo en la vista anterior (exporador de archivos). Mostrará su nombre y un icono que represente si es un directorio, un archivo o una vista editable con el editor que se construirá. Entre sus responsabilidades están abrir los archivos (o sea, abrir el archivo en el editor de código o en el editor de vistas en caso que corresponda), embeber listas de archivos en caso de que se clickee un directorio y permitir al usuario renombrar archivos, mostrando un menú contextual.
+  ~ Esta vista representará a un archivo en la vista anterior (exporador de archivos). Mostrará su nombre y un icono que represente si es un directorio, un archivo o un template editable con el editor que se construirá. Entre sus responsabilidades están abrir los archivos (o sea, abrir el archivo en el editor de código o en el editor de vistas en caso que corresponda), embeber listas de archivos en caso de que se clickee un directorio y permitir al usuario renombrar archivos, mostrando un menú contextual.
 
 Editor de Texto
   ~ Esta vista contendrá el editor de archivos de texto (editor de código). Sus responsabilidades serán mostrar un editor con resaltado de sintaxis y modificar el modelo de archivo que corresponda para guardar cambios.
@@ -92,9 +110,9 @@ El objetivo es que el usuario arrastre elementos hacia el canvas de la misma for
 
 Para implementar este concepto de arrastrar y soltar, se utilizará jQuery UI. esta librería provee, entre otras cosas, métodos para habilitar el arrastrado de elementos en una página. El usuario arrastrará un elemento, y, mediante las llamadas de jQuery, se colocará el elemento en donde el usuario tenga su cursor en el momento, a manera de proveer retroalimentación visual. En cuanto el usuario suelte el elemento, se agregará su correspondiente fragmento de HTML en el template, lo que se reflejará en el canvas en tiempo real.
 
-![Los diferentes elementos de retroalimentación visual que se presentan al arrastrar un componente. \label{figures:drag-editor}](figures/drag-editor.png)
+![Los diferentes elementos de retroalimentación visual que se presentarían al arrastrar un componente. \label{figures:drag-editor}](figures/drag-editor.png)
 
-En la Figura \ref{figures:drag-editor} se pueden apreciar los diferentes elementos de retroalimentación al momento de arrastrar un elemento. En el punto 1 se pueden apreciar, primero, un borde amarillo al rededor del elemento en donde "caería" el componente. Además, en el mismo número, puede visualizarse cómo se vería el componente (en este caso un botón) una vez que el usuario lo deje ahí. En el número 2, puede verse el mismo componente, que sigue al cursor mientras el usuario esté arrastrando. Esto le muestra al usuario qué es lo que está arrastrando.
+En la Figura \ref{figures:drag-editor} se pueden apreciar los diferentes elementos de retroalimentación al momento de arrastrar un elemento. En el punto 1 se pueden ver, primero, un borde amarillo alrededor del elemento en donde "caería" el componente. Además, en el mismo número, puede visualizarse cómo se vería el componente (en este caso un botón) una vez que el usuario lo deje ahí. En el número 2, puede verse el mismo componente, que sigue al cursor mientras el usuario esté arrastrando. Esto le muestra al usuario qué es lo que está arrastrando.
 
 De esta forma, el desarrollador puede ver, por un lado, qué componente estaría agregando al canvas y, por otro lado, cómo quedaría éste una vez que lo agregue.
 
@@ -112,15 +130,13 @@ A continuación se detallarán algunos de los casos de uso que tiene la aplicaci
 -->
 
 
-## Primera Etapa de Construcción
+## Construcción de la Base
 
 ### Creación del Entorno de Trabajo
 
 En esta sección se detallarán cómo se crearon y estructuraron los dos entornos de trabajo, tanto para el backend como para el frontend. 
 
 Ambos entornos de trabajo se crearon en carpetas independientes (dada su naturaleza) y se inicializaron repositorios Git en cada una, a manera de mantener un control de versiones en cada una.
-
-Para el control de versiones no se utilizó ninguna estrategia en especial. Dado que sólo el autor estará desarrollando, no valdría la pena implementar alguna estrategia de ramas o algo parecido para el control de versiones. Simplemente se utilizó la rama principal (`master` en Git), y se fueron creando "commits" cuando se considerara necesario.
 
 #### Entorno de Trabajo para el Backend
 
@@ -188,20 +204,26 @@ Se comenzó por prototipar la interfaz principal. Como ya se ha dicho, se utiliz
 
 Se prototipó un menú superior con diferentes opciones de manera similar a los menú que se ven en diferentes IDE y programas de escritorio. Se incluyeron opciones como crear un nuevo proyecto, un nuevo archivo, ensamblar y ejecutar el proyecto, etc.
 
-Se agregó la barra lateral izquierda, en la que se muestra una lista de los archivos abiertos y una lista de los archivos en el proyecto. Las carpetas cuentan con un ícono que las muestra como tal, mientras que archivos de vistas tienen un ícono que las diferencia de las demás. ***PONER ACA QUE EN LA FIGURA X SE VE BLABLABLA***
+Se agregó la barra lateral izquierda, en la que se muestra una lista de los archivos abiertos y una lista de los archivos en el proyecto. Las carpetas cuentan con un ícono que las muestra como tal, mientras que archivos de templates tienen un ícono que los diferencia de las demás. En la Figura \ref{figures:sidebar} pueden verse los diferentes íconos.
 
-Para el editor de código central se utilizó CodeMirror^[citar esto]. Esto permitió embeber un editor de código muy extensible y completo en muy poco tiempo. El editor utiliza gran parte de la pantalla pues, siendo lo más esencial, debe dársele más espacio. ***SUENA MUY MAL ESTO :(***
+![La barra lateral, en la que se pueden apreciar los íconos por carpeta y archivo. \label{figures:sidebar}](figures/sidebar.png)
 
-En el caso del editor de vistas, se agregó un "canvas" (básicamente un espacio en el cual arrastrar los componentes que se mencionarán más adelante), y una barra lateral derecha, que sólo es visible al estar editando un archivo que la requirera. Además del canvas, en la parte superior se agregaron dos "tabs", que permitirán al usuario cambiar entre el canvas y un editor de código para la vista. En la barra lateral estarán los diferentes componentes en una lista que mostrará una pequeña vista previa del componente y su nombre.
+Para el editor de código central se utilizó CodeMirror^[citar esto]. CodeMirror es un widget que permite editar código en el navegador con resaltado de sintaxis, líneas numeradas, entre otras características. El editor de código se colocó en la parte central de la interfaz, como puede verse en el recuadro rojo de la Figura \ref{figures:codemirror}.
 
-Otras vistas corresponden a el selector de proyectos, que se creó usando una ventana modal (que Twitter Bootstrap trae consigo). Ésta se mostraría en el momento que el usuario ingrese al programa. Ahí, podrá elegir algún proyecto en el que haya estado trabajando o crear uno nuevo directamente.
+![El recuadro rojo muestra cómo se ve CodeMirror al mostrar código en CoffeeScript. Puede apreciarse el resaltado de sintaxis y las líneas numeradas. \label{figures:codemirror}](figures/codemirror.png)
+
+En el caso del editor de vistas, se agregó un "canvas" (básicamente un espacio en el cual arrastrar los componentes que se mencionarán más adelante), y una barra lateral derecha, que sólo es visible al estar editando un archivo que la requiera. Además del canvas, en la parte superior se agregaron dos pestañas, que permitirán al usuario cambiar entre el canvas y un editor de código para la vista. En la barra lateral estarán los diferentes componentes en una lista que mostrará una pequeña vista previa del componente y su nombre. En la Figura \ref{figures:canvas} pueden apreciarse el canvas (número 1) y la barra lateral con widgets (número 2).
+
+![El canvas a la izquierda (1), con los diferentes widgets disponibles a la derecha (2). \label{figures:canvas}](figures/canvas.png)
+
+La última vista corresponde al selector de proyectos (ver Figura \ref{figures:projects-view}), que se creó usando una ventana modal (un widget de Twitter Bootstrap). Ésta se mostraría en el momento que el usuario ingrese al programa. Ahí, podrá elegir algún proyecto en el que haya estado trabajando o crear uno nuevo directamente.
 
 ### Creación de Servicios en el Backend
 \label{section:create-services}
 
+<!--
 Para poder crear las funcionalidades necesarias en el frontend, se decidió crear primero los servicios en el Backend. Éstos son los siguientes:
 
-  - Autentificación de Usuarios
   - Creación de proyectos
   - Obtención de una lista de proyectos
   - Obtención de lista de archivos
@@ -219,6 +241,8 @@ Ahora, si bien sólo existirá un modelo para el proyecto, en términos de la in
   - `GET /projects/:id/files?path=/ruta/al/directorio`: lista los archivos en el directorio especificado
 
 Aún cuando proyectos y archivos se manejarán en el mismo modelo, se dividirán en dos controladores, a manera de encapsular en cierta medida su funcionalidad.
+
+-->
 
 En las subsecciones siguientes se discutirán algunas de las implementaciones de funcionalidades en el backend. Sin embargo no se discutirán los métodos que se publican y son accesibles a través de la API. Éstos últimos simplemente arrojan respuestas con objetos JSON como el que sigue para comunicarse con el frontend, por lo que no se considera necesario entrar en mucho detalle.
 
@@ -250,6 +274,7 @@ En las subsecciones siguientes se discutirán algunas de las implementaciones de
 
 El anterior es un fragmento de una respuesta del servidor al pedir los archivos en el directorio raíz de un projecto.
 
+<!--
 #### Autentificación de Usuarios
 
 Para autentificar usuarios se utilizó el sistema OAuth de GitHub. OAuth es un protocolo de autentificación y autorización que utiliza un proveedor. El proveedor en este caso es GitHub. La ventaja de este protocolo es que permite registrar y autentificar usuarios sin manejar un sistema de usuarios interno, quitando la necesidad de almacenar contraseñas y requerir al usuario registrarse en el sitio.
@@ -275,6 +300,8 @@ El primer paso es crear una "aplicación" en el portal de desarrolladores de Git
 ![Proceso de creado de aplicaciones en GitHub \label{figures:oauth-create}](figures/oauth-create.png)
 
 ![Acá pueden apreciarse ambos identificadores que entrega GitHub \label{figures:oauth-app}](figures/oauth-app.png)
+
+-->
 
 #### Creación de Proyectos
 
@@ -441,7 +468,7 @@ Utilizando un programa llamado "forever"^[https://github.com/nodejitsu/forever],
 
 Se comenzó por implementar el selector de proyectos. Para esto fue necesario  implementar el modelo y colección de proyectos. En esta etapa fueron implementados de la forma más simple posible. Básicamente, se crearon como dos clases que extienden a `Backbone.Model` y `Backbone.Collection` respectivamente. Dado que Backbone está diseñado para interactuar con APIs REST, no fue necesario configurar más que la URL del backend y especificar que la colección corresponde a una colección de Proyectos.
 
-***PONER EJEMPLOS DE CÓDIGO ACÁ***
+<!--***PONER EJEMPLOS DE CÓDIGO ACÁ***-->
 
 Luego de configurar el modelo y la colección, se agregó una ruta al enrutador de Backbone. El enrutador lee la URL del navegador e interpreta qué método llamar del enrutador. La idea es que se especifiquen las URL necesarias para la navegación de la aplicación. En el caso de esta solución, sólo existirán dos rutas principalmente. La primera será la ruta base, donde se cargará el selector de proyectos del cual se habla, y la segunda será la que tendrá cada proyecto. Por lo tanto, se configuró la URL base, y, en el método que es llamado, se inicializa la colección de proyectos.
 
@@ -494,15 +521,11 @@ El visor de archivos, instancia una vista de archivo por cada uno de los documen
 
 ![El visor de archivos: cada vista de directorio contiene más vistas de archivos de ser necesarias. \label{figure:file-browser}](figures/file-browser.png)
 
-En caso de que el usuario haga click en un archivo, se le pasa la instancia del modelo al editor de código, el cual indica al modelo que debe pedir el contenido del archivo al servidor para mostrarlo. El editor de código es simplemente una librería llamada CodeMirror que permite al usuario editar el contenido de los archivos. El editor de código se encarga además de indicarle al modelo del archivo que guarde su contenido en el backend si el usuario lo solicita.
-
-***EXPLICAR MÁS DE LO ANTERIOR***
+En caso de que el usuario haga click en un archivo, se le pasa la instancia del modelo al editor de código, el cual indica al modelo que debe pedir el contenido del archivo al servidor para mostrarlo. El editor de código utiliza CodeMirror (***ver tal y tal sección***) y básicamente muestra el contenido del archivo en el editor, que se encarga de formatearlo y resaltar sintaxis, entre otras responsabilidades. El editor se encarga además de actualizar el contenido del archivo al momento de guardar.
 
 Para esta etapa de la construcción, se incluyó además la posibilidad de ensamblar y ejecutar el proyecto. Para esto, se agregaron métodos en el modelo de proyectos que hace llamadas al backend para ensamblar y ejectuar el servidor de pruebas. El evento es manejado por la barra de navegación, que incluye varios elementos de menú que por esta etapa se mantuvieron inactivos. A la derecha de la barra de navegación se encuentra un botón que permite ensamblar y ejecutar el proyecto con un sólo click, y otros dos que permiten ejecutarlo y ensamblarlo por separado.
 
 En esta etapa se agregaron además atajos de teclado. Para esto se utilizó una librería Javascript llamada Mousetrap^[link!]. Esta librería permite configurar muy fácilmente atajos de teclado con una gran flexibilidad en términos de combinaciones de teclas. Por ejemplo, si se quisiera agregar un atajo de teclado para guardar el archivo actual, se puede hacer lo siguiente:
-
-***CORROBORAR ESTO***
 
 ```coffeescript
 Mousetrap.bind ["ctrl+s", "command+s"], ->
@@ -511,7 +534,11 @@ Mousetrap.bind ["ctrl+s", "command+s"], ->
 
 Esto permite que el usuario use la combinación "CTRL+S" o bien, en computadores Mac, "COMMAND+S". Es posible agregar atajos de teclado más complejos, como "CTRL+ALT+S" o "CTRL+SHITF+S", etc. Incluso, es posible saber si el usuario está manteniendo presionada alguna tecla. Por ejemplo, si se quiere saber si el usuario está manteniendo presionada la tecla "SHIFT", se puede hacer de la siguiente forma:
 
-***PONER EXTRACTO DE CÓDIGO ACA***
+```coffeescript
+Mousetrap.bind ['shift'], (e) =>
+      # El usuario está manteniendo presionada la tecla SHIFT
+    , 'keydown'
+```
 
 Utilizando esta librería, se agregaron varios atajos de teclado en esta etapa. Entre ellos:
 
@@ -520,9 +547,9 @@ Utilizando esta librería, se agregaron varios atajos de teclado en esta etapa. 
 - Ejecutar el proyecto: `CTRL+R`
 - Cambiar entre archivos abiertos: `CTRL+NUMERO`
 
-Este último atajo mencionado permite al usuario cambiar entre los archivos que están abiertos en la lista de la derecha, sin tener que mover sus manos del teclado básicamente. La mayoría de los editores de código permiten cambiar rápidamente entre los archivos abiertos de esta manera.
+Este último atajo mencionado permite al usuario cambiar entre los archivos que están abiertos en la lista de la derecha. La mayoría de los editores de código permiten cambiar rápidamente entre los archivos abiertos de esta manera.
 
-La mayoría de los atajos de teclado son interpretados por el navegador. El atajo para guardar, para cambiar entre archivos abiertos, todos ellos son atajos que el navegador utiliza internamente. Para evitar que el navegador los interpretara, se utilizó el siguiente método:
+Casi todos los atajos de teclado son interpretados por el navegador. Por ejemplo, el atajo para guardar, para cambiar entre archivos abiertos, todos ellos son atajos que el navegador utiliza internamente. Para evitar que el navegador los intercepte, se utilizó la siguiente técnica:
 
 ```coffeescript
 Moustrap.bind ["ctrl+s"], (event) ->
@@ -531,13 +558,9 @@ Moustrap.bind ["ctrl+s"], (event) ->
   # Guardar el archivo
 ```
 
-Cada "evento" que es generado en Javascript, normalmente es pasado a los callbacks. En este caso, es posible llamar al método `preventDefault()` del evento, lo que indica al navegador que no realice la acción por defecto que debería. Si no se llamara a este método, el archivo de todas formas se guardaría, pues el evento se está llamando de todas formas, pero el navegador también mostraría la ventana de "Guardar Página" que por defecto se mostraría en cualquier otro caso, y eso no es lo que se quiere en una aplicación web de este estilo.
+Cada "evento" que es generado en Javascript, normalmente es pasado a los callbacks. En este caso, es posible llamar al método `preventDefault()` del evento, lo que indica al navegador que no realice la acción por defecto que debería. Si no se llamara a este método, el archivo de todas formas se guardaría, pues el evento se está llamando, pero el navegador también mostraría la ventana de "Guardar Página" que por defecto aparecería en otro caso, y eso no es lo que se quiere en una aplicación web de este estilo.
 
-
-
-## Segunda Etapa de Construcción
-
-La segunda etapa de construccón del proyecto se dedicó principalmente a la implementación del editor de templates. Dado que esta es la parte más importante del proyecto se dedicó una etapa completa a ella.
+## Construcción del Editor de Interfaces
 
 El editor se diseñó de manera que en el centro se tuviera una vista en vivo de lo que se estaba construyendo, mientras que a la derecha se listaran todos los componentes disponibles para agregar al template. Dado que los templates son básicamente HTML, es el navegador el que se encarga de mostrar cómo se vería finalmente. Por esto, lo que se hizo fue agregar elementos a la lista de componentes de manera que al arrastrarlos hacia el centro (el editor), simplemente se agregue su representación en HTML y el navegador se encargaría de mostrar su "vista previa".
 
@@ -557,7 +580,7 @@ Con este primer acercamiento, ya se podía arrastrar y soltar componentes. El pr
 @$("*").not('img, button, input, select, option, optgroup').droppable()
 ```
 
-Con esto, se simplificó un tanto el arrastrado de componentes, evitando que algunos quedaran dentro de elementos que no correspondía. Ahora, se notó que era difícil saber dónde realmente se estaba dejando el componente que el usuario estaba arrastrando, por lo que se incluyó retroalimentación visual al momento de arrastar, es decir, cuando el usuario esté arrastrando el elemento, el elemento en donde "caería" el componente se rodea con un borde amarillo, como muestra la Figura \ref{asdfaksjdha}. ***PONER FIGURA!*** Esto se logra usando propiedades de jQuery UI:
+Con esto, se simplificó un tanto el arrastrado de componentes, evitando que algunos quedaran dentro de elementos que no correspondía. Ahora, se notó que era difícil saber dónde realmente se estaba dejando el componente que el usuario estaba arrastrando, por lo que se incluyó retroalimentación visual al momento de arrastar, es decir, cuando el usuario esté arrastrando el elemento, el elemento en donde "caería" el componente se rodea con un borde amarillo, como muestra la Figura \ref{figures:drag-editor}. Esto se logra usando propiedades de jQuery UI:
 
 ```coffeescript
 exceptions = 'img, button, input, select, option, optgroup'
@@ -612,7 +635,7 @@ makeDroppable: (only) ->
     hoverClass: "hovering"
 ```
 
-Hasta ahora, el editor de templates agrega los componentes anexándolos al final de la posición en la que el usuario las deja. Esto lo imposibilita de agregar componentes al principio de una lista por ejemplo. ***FIGURA EXPLICANDO ESTO?*** Por lo tanto, se agrego la posibilidad de cambiar ese comportamiento. Al momento de arrastrar un componente, el usuario puede presionar (y mantener presionada) la tecla `SHIFT`, de manera que al dejar un componente, éste se anexe al principio en vez de al final, permitiendo al usuario agregar cosas al principio de listas o formularios, por ejemplo.
+Hasta ahora, el editor de templates agrega los componentes anexándolos al final de la posición en la que el usuario las deja. Esto lo imposibilita de agregar componentes al principio de una lista por ejemplo.  Por lo tanto, se agregoó la posibilidad de cambiar ese comportamiento. Al momento de arrastrar un componente, el usuario puede presionar (y mantener presionada) la tecla `SHIFT`, de manera que al dejar un componente, éste se anexe al principio en vez de al final, permitiendo al usuario agregar cosas al principio de listas o formularios, por ejemplo.
 
 Por último, para facilitar aún más el arrastrado de componentes, se agregó una vista previa de cómo quedaría el componente que se está arrastrando una vez que se suelte. La idea es que al estar arrastrando un elemento, éste aparece en el editor con una ligera opacidad. Esto se logró usando algunas llamadas de jQuery UI:
 
@@ -629,13 +652,17 @@ Por último, para facilitar aún más el arrastrado de componentes, se agregó u
     self.removeComponent()
 ```
 
-Con estas llamadas, al momento de que el usuario esté sobre un elemento ("over"), literalmente se agrega el componente al editor, para luego eliminarlo en caso de salirse ("out"), o bien dejarlo definitivamente al soltarlo ("drop"). ***FOTOO!!!***
+Con estas llamadas, al momento de que el usuario esté sobre un elemento ("over"), literalmente se agrega el componente al editor, para luego eliminarlo en caso de salirse ("out"), o bien dejarlo definitivamente al soltarlo ("drop"). En la Figura \ref{figures:drag-editor} puede verse un ejemplo de este comportamiento.
 
 Por último, el editor de templates también debería permitir al usuario editar el código directamente, en caso de que no exista algún componente o bien se necesite agregar cierta lógica más allá de HTML. Para esto, se utilizó el mismo editor de código que para los archivos normales. Se agregaron dos pestañas en la parte superior del editor de templates que permiten cambiar entre el editor visual y el código fuente (ver Figura \ref{figure:html-editor}).
 
 ![Estas pestañas permiten al usuario cambiar entre el modo visual y el editor HTML \label{figure:html-editor}](figures/html-editor.png)
 
-***CONTENTEDITABLE!!!***
+Por último, existe una propiedad en HTML5 que permite al usuario editar cualquier parte de un sitio directo desde el navegador. Al habilitar esta propiedad en el canvas, el usuario puede cambiar etiquetas de formulario, o escribir directamente en el canvas sin tener que cambiar al editor de HTML para agregar texto. Para habilitar esta propiedad, basta con agregar el atributo `contenteditable` a la etiqueta del canvas:
 
+```html
+<div id="view_container" contenteditable>
+  <!-- El canvas -->
+</div>
 
-[^backbone-colection]: En Backbone, existen modelos y, a su vez, colecciones de modelos. Las colecciones son básicamente un conjunto de instancias de un tipo de modelo. Por ejemplo, en el caso de este trabajo, existirán colecciones de *archivos*.
+```

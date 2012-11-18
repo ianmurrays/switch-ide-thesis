@@ -1,5 +1,7 @@
 # Conclusiones
 
+\label{section:conclusion}
+
 A continuación se presentarán conclusiones del presente trabajo, con respecto a la solución lograda y conclusiones para trabajo futuro.
 
 ## Sobre la Solución
