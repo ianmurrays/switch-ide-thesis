@@ -9,11 +9,13 @@ En este capítulo, se revisarán las diferentes herramientas que existen en el m
 
 ## Frameworks Actuales
 
-Existe una variedad enorme de frameworks para desarrollo web de lado de cliente, y, como se dijo anteriormente, día a día aparecen nuevos competidores, lo que pasó de ser algo bueno a algo que aumenta las barreras de entrada. El hecho de que haya tantas opciones para desarrolladores (incluso experimentados) hace que elegir uno sea muy difícil y que finalmente se opte por la solución incorrecta. Muchos frameworks tienen varios puntos fuertes, y no siempre un framework es la mejor solución para un tipo determinado de problema.
+Existe una variedad enorme de frameworks para desarrollo web de lado de cliente, y, como se dijo anteriormente, día a día aparecen nuevos competidores, lo que pasó de ser algo bueno a algo que aumenta las barreras de entrada. El hecho de que haya tantas opciones para desarrolladores (incluso experimentados) hace que elegir uno sea muy difícil y que finalmente se opte por una solución posiblemente incorrecta. Muchos frameworks tienen varios puntos fuertes, y no siempre un framework es la mejor solución para un tipo determinado de problema.
 
 Ahora bien, sí existen buenos frameworks y varios de ellos son relativamente fáciles de entender y dominar. La mayoría de ellos llevan buen tiempo en el mercado y por ende tienen una comunidad fuerte y activa, junto con una base de código robusta.
 
 ### Backbone
+
+\label{sections:backbone}
 
 [Backbone][backbone] [@backbone] es un framework simple, extensible y liviano, lo que lo hace una muy buena opción para desarrollar todo tipo de aplicaciones. Además, sus pocas dependencias de otras librerías hacen que las aplicaciones desarrolladas con él sean más livianas comparadas con otros frameworks.
 
@@ -65,7 +67,7 @@ En cuanto a las desventajas, el desarrollador está obligado a trabajar con Ext 
 
 [Divshot][divshot] [@divshot] es una de las herramientas que inspiró la presente memoria. Es una aplicación de prototipado rápido basado en web. Fue creada en abril de 2012, por lo que es una herramienta relativamente nueva.
 
-Permite, utilizando Twitter Bootstrap [@bootstrap], crear prototipos de sitios y aplicaciones web arrastrando componentes, de la misma forma que IDEs como Xcode o Visual Studio. En la presente memoria, se quiere lograr un comportamiento muy parecido para la creación de templates.
+Permite, utilizando Twitter Bootstrap [@bootstrap], crear prototipos de sitios y aplicaciones web arrastrando componentes, de la misma forma que IDEs como Xcode o Visual Studio (ver Figura \ref{figures:divshot}). En la presente memoria, se quiere lograr un comportamiento muy parecido para la creación de templates.
 
 Entre las ventajas que presenta la herramienta, está la facilidad con la que se pueden crear prototipos de vistas. Sólo arrastrando widgets, se puede llegar a una vista en pocos minutos. Además, es posible previsualizar los resultados fácilmente, e incluso exportar a HTML ^[**Hypertext Markup Language:** es el lenguaje de etiquetas utilizado para las páginas web. Todas ellas están hechas con esto, más una combinación de otros lenguajes. [@html]] con un sólo click. Lo mejor de todo, es que el HTML generado está muy bien ordenado y formateado.
 
@@ -89,6 +91,8 @@ Ahora bien, no permite crear templates de forma visual (que es lo que uno espera
 
 Es una herramienta de código cerrado pero gratuita.
 
+<!--
+
 ### Wavemaker
 
 [Wavemaker][wavemaker] [@wavemaker] es una herramienta que permite generar "bases de datos" de manera visual. El objetivo principal de esta aplicación es poder crear sistemas de manejo de datos de manera fácil, escribiendo la menor cantidad de código posible.
@@ -106,6 +110,8 @@ Es una herramienta gratuita, aunque de código cerrado.
 Si bien Zoho Creator es una herramienta relativamente poderosa y fácil de usar, no es una herramienta que utilizaría un desarrollador. Hay varias razones para esto último. Primero, no permite exportar lo creado para alojarlo en otro servidor; segundo, no es una herramienta de desarrollo que permita crear aplicaciones de lado de cliente o de servidor, sino que permite crear simples bases de datos; y tercero, no es una herramienta gratuita o de código abierto, lo que hace que lo creado con ella tenga ciertas limitaciones en cuanto a licencias.
 
 Como se dijo antes, es un servicio de código cerrado y pagado.
+
+-->
 
 <!--
 # Motores Javascript

@@ -16,7 +16,14 @@ Es este último aspecto el que se considera como un problema actualmente en el m
 
 ## Objetivos
 
-En este trabajo se propone la creación de un entorno de desarrollo integrado, al que se le llamará **Switch IDE**, que permita el desarrollo de aplicaciones web facilitando la creación de interfaces de manera similar a las herramientas descritas anteriormente.
+El objetivo primario de este trabajo es la creación de un entorno de desarrollo integrado, al que se le llamará **Switch IDE**, que permita el desarrollo de aplicaciones web facilitando la creación de interfaces de manera similar a las herramientas descritas anteriormente.
+
+Los objetivos secundarios de este trabajo serán:
+
+- Permitir editar templates estilo Xcode o Visual Studio
+- Facilitar la estructuración de proyectos, evitando que el desarrollador programe todo en un solo archivo
+- Permitir ensamblar proyectos y probarlos directamente en Switch IDE
+- Liberar el código fuente de este trabajo bajo la licencia MIT [@mit-license]
 
 ## Estructura de este Trabajo
 
