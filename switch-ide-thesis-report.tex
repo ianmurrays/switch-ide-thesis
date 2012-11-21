@@ -1,12 +1,13 @@
-% \documentclass[]{article}
-\documentclass[12pt,titlepage,]{report}
+\documentclass[12pt,spanish,letter]{report}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage[left=2.6cm,top=3cm,right=2.6cm]{geometry}
 \usepackage{fixltx2e} % provides \textsubscript
-\usepackage[spanish]{babel}
+\usepackage[spanish,english]{babel}
+\usepackage{anyfontsize}
+\usepackage{mathptmx}
 
 % \renewcommand{\familydefault}{\sfdefault}
 
@@ -71,41 +72,62 @@
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 
-\makeatletter
-\renewcommand\paragraph{%
-   \@startsection{paragraph}{4}{0mm}%
-      {-\baselineskip}%
-      {.5\baselineskip}%
-      {\normalfont\normalsize\bfseries}}
-\makeatother
-
-\makeatletter
-\renewcommand\subparagraph{%
-   \@startsection{subparagraph}{4}{0mm}%
-      {-\baselineskip}%
-      {.5\baselineskip}%
-      {\normalfont\normalsize\bfseries}}
-\makeatother
 
 \setcounter{tocdepth}{5} %to make it appears in TOC
 \setcounter{secnumdepth}{5} %to make it numbered
 
 \linespread{1.1}
 
-\title{Switch IDE: Desarrollo de un Entorno de Desarrollo Integrado con
-       Constructor de Intefaces para Aplicaciones Web}
-\author{\textbf{Borrador} --- Universidad Técnica Federico Santa María}
-\date{Ian Murray Schlegel}
+\renewcommand{\baselinestretch}{0.8}
 
+\makeatletter
+\renewenvironment{abstract}{%
+  \if@twocolumn
+    \section*{\abstractname}%
+  \else
+    \small
+    \begin{center}%
+      %\topskip0pt
+    	  %\vspace*{\fill}
+      {\bfseries \abstractname \vspace{-.5em}\vspace{\z@}}%
+    	  %\vspace*{\fill}
+    \end{center}%
+    \quotation
+  \fi}
+  {\if@twocolumn\else\endquotation\fi}
+\makeatother
+
+% Title
+\title{
+\vspace{-3cm}
+{\fontsize{18}{22} {\textbf{UNIVERSIDAD TÉCNICA FEDERICO SANTA MARÍA}}} \\
+{\fontsize{16}{22} \textbf{DEPARTAMENTO DE INFORMÁTICA}} \\
+{\fontsize{14}{17} \textbf{SANTIAGO, CHILE}} \\[25mm]
+\Oldincludegraphics[scale=0.7]{figures/logo_utfsm.png} \\[1\baselineskip]
+{\fontsize{20}{24} \textbf{"SWITCH IDE: CREACIÓN DE UN ENTORNO DE DESARROLLO INTEGRADO CON CONSTRUCTOR DE INTERFACES PARA APLICACIONES WEB"}} \\[1\baselineskip]
+{\fontsize{14}{17} \textbf{IAN ALEXANDER MURRAY SCHLEGEL}} \\[\baselineskip]
+{\fontsize{12}{17} \textbf{MEMORIA DE TITULACIÓN PARA OPTAR AL TÍTULO DE INGENIERO CIVIL INFORMÁTICO}} \\[\baselineskip]
+{\fontsize{12}{17} \textbf{PROFESOR GUÍA: JOCELYN SIMMONDS}} \\
+{\fontsize{12}{17} \textbf{PROFESOR CORREFERENTE: LIOUBOV DOMBROVSKAIA}} \\
+}
+\date{\fontsize{14}{17} {\textbf{NOVIEMBRE 2012}}}
+
+% Begins the document!
 \begin{document}
+
+% Select spanish as default
+\selectlanguage{spanish}
+
 \maketitle
 
-% {
-% \hypersetup{linkcolor=black}
-% \tableofcontents
-% }
- \pagenumbering{Roman}
+% Renew line separation
+\renewcommand{\baselinestretch}{1}
+\selectfont
 
+% Roman pages for the first part of the thesis
+\pagenumbering{Roman}
+
+% Dedicatory
 \begin{flushright}
 \topskip0pt
 \vspace*{\fill}
@@ -115,13 +137,63 @@
 \vspace*{\fill}
 \end{flushright}
 
+\clearpage
 \newpage
+
+% Abstract
+\vspace*{\fill}
+\vspace{-2.5cm}
+\begin{abstract}
+
+Hoy en día, para desarrollar aplicaciones web no existe una gran variedad de herramientas de código abierto o gratuitas que faciliten el prototipado de vistas en el proceso de desarrollo. Herramientas de escritorio como Visual Studio o Xcode, que facilitan en gran medida esta parte del desarrollo de aplicaciones para Windows y Mac respectivamente, no tienen una contraparte en el ambiente web que satisfaga los requerimientos antes dichos. En este trabajo se crea un Entorno Integrado de Desarrollo llamado Switch IDE que permite al desarrollador programar aplicaciones utilizando el framework Backbone de Javascript y un editor de interfaces en base a los widgets provistos por la librería Twitter Bootstrap. Finalmente se logra desarrollar la herramienta, basada en web, que según las pruebas preliminares permitiría ahorrar en promedio un 30\% del tiempo invertido en prototipar interfaces.
+\\[\baselineskip]
+\textbf{Palabras Clave:} aplicaciones web, interfaces, entornos de desarrollo, javascript
+
+\end{abstract}
+
+
+%\newpage
+\selectlanguage{english}
+
+\begin{abstract}
+
+Nowadays, there isn't a great variety of open-source or free tools to develop web applications that make prototyping of views easier during the development process. Desktop tools like Visual Studio or Xcode, that make this part of the development process a whole lot easier in Windows and Mac respectively, don't have a counterpart in the web environment that satisfies the aforementioned requirements. In this research, an Integrated Development Environment called Switch IDE is created, that allows developers to program applications using the Backbone Javascript framework and an interface builder based on Twitter Boostrap's widget library. Finally, the tool is developed, and according to preliminary tests it might be able to save an average of 30\% of the time that is invested in interface prototyping.
+\\[\baselineskip]
+\textbf{Keywords:} web applications, interfaces, development environments, javascript
+
+\end{abstract}
+\vspace*{\fill}
+\selectlanguage{spanish}
+
+% Glossary
+
+\chapter*{Glosario}
+
+\begin{description}
+	\item[API] ``Application Programming Interface''. Es una especificación que define una interfaz para que componentes de software puedan comunicarse entre ellos.
+	\item[CSS] Hojas de estilo en cascada (``Cascading Style Sheets'' por sus siglas en inglés). Es un lenguaje que permite definir estilos para sitios web, como alineación de texto, negritas y cursivas, colores, etc.
+	\item[HTML] Lenguaje de marcado de hipertexto (``Hypertext Markup Language'' por sus siglas en inglés). Es el lenguaje de etiquetas que se utiliza para crear páginas web, y es lo que los navegadores interpretan para mostrar los diferentes elementos en la página.
+	\item[HTTP] ``Hypertext Transfer Protocol'', es el protocolo de transferencia de hipertexto utilizado más comúnmente por los navegadores para transferir páginas web.
+	\item[IDE] Entorno Integrado de Desarrollo ( ``Integrated Development Environment'' en inglés). Es un programa que combina varias herramientas para desarrollo (como un editor de código y un editor de vistas).
+	\item[Javascript] Es el lenguaje de programación utilizado por el navegador, y permite al desarrollador entregar dinamismo a los sitios que de lo contrario serían estáticos.
+	\item[JSON] ``Javascript Object Notation''. Es una forma de representar datos (números, cadenas de texto, etc) en un formato liviano y simple, basado en la notación de objetos de Javascript.
+	\item[ODM] ``Object Document Mapper''. Es una técnica de programación muy similar a ORM, en donde objetos y documentos almacenados en una base de datos son relacionados directamente, de manera que documentos en la base de datos son representados por objetos en el lenguaje de programación que se esté usando.
+	\item[ORM] ``Object Relational Mapper''. Es una técnica de programación en donde objetos representan a registros en una base de datos relacional.
+	\item[REST] ``Representational State Transfer'', es una técnica de arquitectura de servicios web en la que la interfaz se basa en representar objetos y acciones sobre ellos (como creación y eliminación, por ejemplo).
+	\item[SQL] ``Structured Query Language''. Es un lenguaje de consultas utilizado en bases de datos relacionales.	
+	\item[URL] ``Uniform Resource Locator'', es básicamente una dirección a internet, como por ejemplo \href{http://www.usm.cl}{http://www.usm.cl}.
+\end{description}
+
+
+% TOC
 \hypersetup{linkcolor=black} \tableofcontents
 
 \clearpage
 \newpage
 
-\section{Introducción}
+% Here we go
+% GL&HF
+\chapter{Introducción}
 
 \pagenumbering{arabic}
 
@@ -181,7 +253,7 @@ que consume tiempo y para la cual sí existen herramientas muy buenas en
 el mundo del desarrollo de aplicaciones nativas (como las ya mencionadas
 Xcode o Visual Studio).
 
-\subsection{Objetivos}
+\section{Objetivos}
 
 El objetivo primario de este trabajo es la creación de un entorno de
 desarrollo integrado, al que se le llamará \textbf{Switch IDE}, que
@@ -202,7 +274,7 @@ Los objetivos secundarios de este trabajo serán:
   Liberar el código fuente de este trabajo bajo la licencia MIT {[}1{]}
 \end{itemize}
 
-\subsection{Estructura de este Trabajo}
+\section{Estructura de este Trabajo}
 
 El trabajo se estructurará como sigue:
 
@@ -230,7 +302,7 @@ El trabajo se estructurará como sigue:
 \clearpage
 \newpage
 
-\section{Estado del Arte}
+\chapter{Estado del Arte}
 
 \label{section:state-of-the-art}
 
@@ -256,7 +328,7 @@ revisarán primero diferentes frameworks disponibles hoy en día,
 analizando sus ventajas y desventajas, para luego mostrar herramientas
 que facilitan el uso de frameworks.
 
-\subsection{Frameworks Actuales}
+\section{Frameworks Actuales}
 
 Existe una variedad enorme de frameworks para desarrollo web de lado de
 cliente, y, como se dijo anteriormente, día a día aparecen nuevos
@@ -272,7 +344,7 @@ relativamente fáciles de entender y dominar. La mayoría de ellos llevan
 buen tiempo en el mercado y por ende tienen una comunidad fuerte y
 activa, junto con una base de código robusta.
 
-\subsubsection{Backbone}
+\subsection{Backbone}
 
 \label{sections:backbone}
 
@@ -300,7 +372,7 @@ muy poderosas que se benfician muy bien de lo que Backbone provee.
 Backbone es un framework de código abierto y por lo tanto completamente
 gratuito.
 
-\subsubsection{Cappuccino}
+\subsection{Cappuccino}
 
 \href{http://cappuccino-project.org}{Cappuccino} {[}6{]} es un framework
 de desarrollo web enfocado en llevar ``Cocoa'' de Apple a la web, aunque
@@ -345,7 +417,7 @@ por el framework.
 
 Cappuccino es un framework de código abierto y gratuito.
 
-\subsubsection{Ext JS}
+\subsection{Ext JS}
 
 \href{http://www.sencha.com/products/extjs/}{Ext JS} {[}8{]} es un
 framework con soporte para una gran variedad de widgets y es muy
@@ -369,7 +441,7 @@ desarrollar una aplicación web y mantener el código propietario (es
 decir, no liberarlo como código abierto), se deben cancelar (por lo
 bajo) \$329 dólares americanos {[}10{]}.
 
-\subsection{Herramientas Actuales}
+\section{Herramientas Actuales}
 
 Ahora que se han visto una variedad de frameworks disponibles para
 desarrollar aplicaciones web, se procederá a analizar el mundo de las
@@ -377,7 +449,7 @@ herramientas para el desarrollo de éstas. El enfoque de esta sección es
 analizar diferentes programas y servicios que se ofrecen, que son en
 alguna forma similares a lo que se quiere lograr en el presente trabajo.
 
-\subsubsection{Sencha Architect}
+\subsection{Sencha Architect}
 
 \href{http://www.sencha.com/products/architect}{Sencha Architect}
 {[}11{]} es una herramienta que tiene varias similitudes con lo que se
@@ -411,7 +483,7 @@ dominar), y, por otro lado, el uso de este producto es pagado: cuesta
 Además, a ese valor hay que agregarle otros \$329 por la licencia de uso
 de Ext JS {[}10{]}, si es que se quiere para uso comercial.
 
-\subsubsection{Divshot}
+\subsection{Divshot}
 
 \href{http://divshot.com/}{Divshot} {[}13{]} es una de las herramientas
 que inspiró la presente memoria. Es una aplicación de prototipado rápido
@@ -446,7 +518,7 @@ componentes en la barra lateral izquierda, con la vista a la derecha,
 donde se arrojan los componentes. \label{figures:divshot}}
 \end{figure}
 
-\subsubsection{eXo Cloud IDE}
+\subsection{eXo Cloud IDE}
 
 \href{http://cloud-ide.com}{eXo Cloud IDE} {[}16{]} es un entorno de
 desarrollo integrado, en la nube. Tiene varias características que lo
@@ -489,7 +561,7 @@ Es una herramienta de código cerrado pero gratuita.
 \clearpage
 \newpage
 
-\section{Propuesta de Solución}
+\chapter{Propuesta de Solución}
 
 \label{section:solution-proposal}
 
@@ -506,7 +578,7 @@ prefabricados (como botones, formularios, ventanas modales, entre
 otros), el usuario podrá generar templates en un tiempo menor y con
 mayor facilidad que al hacerlo de la manera tradicional.
 
-\subsection{Requisitos}
+\section{Requisitos}
 
 Principalmente, la herramienta será un Entorno de Desarrollo Integrado
 compatible con Backbone (ver Sección \ref{sections:backbone}) y deberá:
@@ -543,7 +615,7 @@ de Switch IDE.
 A continuación, se especificará qué roles cumplirán backend y frontend
 en la herramienta propuesta, junto con sus requisitos específicos.
 
-\subsubsection{Definición y Requisitos del Backend}
+\subsection{Definición y Requisitos del Backend}
 
 El backend será un servidor que permitirá al frontend realizar las
 tareas que no le serán posibles por diferentes limitaciones. Por
@@ -570,7 +642,7 @@ Es importante dejar claro que el usuario nunca deberá interactuar con el
 backend directamente, será el frontend el que interactúe con éste y el
 usuario no verá esta interacción.
 
-\subsubsection{Definición y Requisitos del Frontend}
+\subsection{Definición y Requisitos del Frontend}
 
 El frontend será el encargado presentarle al desarrollador todo lo que
 necesite, como mostrar los archivos en un proyecto, mostrar un editor de
@@ -598,13 +670,13 @@ Específiamente, el frontend deberá permitir al desarrollador:
   Ensamblar y probar el proyecto
 \end{itemize}
 
-\subsection{Elección de Herramientas}
+\section{Elección de Herramientas}
 
 En esta sección se discutirán las diferentes alternativas de
 herramientas para desarrollar ambos el backend y el frontend, y qué
 herramientas se escogieron finalmente.
 
-\subsubsection{Elección de Herramientas para el Backend}
+\subsection{Elección de Herramientas para el Backend}
 
 Existen varias alternativas en cuanto a la creación de un backend que
 cumpla con los requisitos especificados anteriormente. Entre los
@@ -657,12 +729,9 @@ almacenar archivos en él usando una tecnología llamada GridFS {[}31{]}.
 
 En términos de uso, existen librerías en Ruby para interactuar con ambas
 bases de datos. Para MySQL, es posible usar ActiveRecord {[}32{]}, un
-ORM\footnote{Object Relational Mapper: librería que permite convertir
-  datos en una base de datos a objetos.} muy popular y muy poderoso que
+ORM muy popular y muy poderoso que
 permite hacer consultas a la base de datos sin utilizar SQL. Para
-MongoDB, existe Mongoid {[}33{]}, un ODM\footnote{Object Document
-  Mapper: librería que permite convertir documentos en una base de datos
-  basada en documentos (como MongoDB) a objetos.} que provee una
+MongoDB, existe Mongoid {[}33{]}, un ODM que provee una
 interfaz muy similar a ActiveRecord.
 
 Las ventajas que posee MongoDB por sobre MySQL hacen de ella una mejor
@@ -689,7 +758,7 @@ manera de optimizar la aplicación cuando esté en producción. Utilizar
 esta herramienta en el backend permitirá crear y mantener proyectos
 mucho más fácilmente que si se hiciera de forma manual
 
-\subsubsection{Elección de Herramientas para el Frontend}
+\subsection{Elección de Herramientas para el Frontend}
 
 Para el desarrollo de aplicaciones de lado de cliente existen varios
 frameworks, entre ellos Backbone, Knockout y Ember {[}37{]}. Todos ellos
@@ -777,7 +846,7 @@ En cambio, con CoffeeScript, lo mismo se resume a lo siguiente:
 \clearpage
 \newpage
 
-\section{Construcción de la Solución}
+\chapter{Construcción de la Solución}
 
 \label{section:construction}
 
@@ -812,7 +881,7 @@ siguientes subcapítulos:
   solución, se decidió dedicar una etapa completa a él.
 \end{itemize}
 
-\subsection{Introducción a Backbone}
+\section{Introducción a Backbone}
 
 \label{section:object-definition}
 
@@ -851,11 +920,11 @@ el sistema y se encarga de instancias modelos y vistas necesarios para
 mostrarlos correctamente.
 \end{description}
 
-\subsection{Diseño de la Solución}
+\section{Diseño de la Solución}
 
 \label{section:solution-design}
 
-\subsubsection{Backend}
+\subsection{Backend}
 
 La solución es una aplicación mayoritariamente de lado de cliente, por
 lo que la mayor cantidad de lógica debe ir en este lado. Por esta razón,
@@ -904,16 +973,16 @@ De esta forma, el frontend podrá consultar sobre listas de proyectos,
 detalles sobre cada proyecto (o cualquier método que se exponga, como
 ensamblar el proyecto) y manipular archivos.
 
-\subsubsection{Frontend}
+\subsection{Frontend}
 
 Se comenzará por definir los diferentes objetos que existirán en el
 frontend. Se definirán diferentes modelos, colecciones y vistas, por lo
 que se recomienda revisar la Sección \ref{section:object-definition}
 para sus significados.
 
-\paragraph{Definición de Objetos}
+\subsubsection{Definición de Objetos}
 
-\subparagraph{Modelos y Colecciones}
+\paragraph{Modelos y Colecciones}
 
 A continuación se explicará a grandes rasgos los modelos y colecciones
 que existirán en el frontend. Se tendrán modelos para los proyectos y
@@ -960,7 +1029,7 @@ guardaría una instancia a una colección de archivos.
 \label{figures:frontend-models}}
 \end{figure}
 
-\subparagraph{Vistas}
+\paragraph{Vistas}
 
 Cada una de las siguientes vistas considera un template asociado.
 
@@ -992,7 +1061,7 @@ quiera editar la vista o realizar cambios que el editor no permita
 directamente. Tiene las mismas responsabilidades que el editor de texto.
 \end{description}
 
-\paragraph{Diseño del Editor de Templates}
+\subsubsection{Diseño del Editor de Templates}
 
 El editor de interfaces se construirá de manera que el usuario pueda
 arrastar componentes como botones o campos de texto directamente en una
@@ -1036,11 +1105,11 @@ De esta forma, el desarrollador puede ver, por un lado, qué componente
 estaría agregando al canvas y, por otro lado, cómo quedaría éste una vez
 que lo agregue.
 
-\subsection{Construcción de la Base}
+\section{Construcción de la Base}
 
 \label{section:first-stage}
 
-\subsubsection{Creación del Entorno de Trabajo}
+\subsection{Creación del Entorno de Trabajo}
 
 En esta sección se detallarán cómo se crearon y estructuraron los dos
 entornos de trabajo, tanto para el backend como para el frontend.
@@ -1049,7 +1118,7 @@ Ambos entornos de trabajo se crearon en carpetas independientes (dada su
 naturaleza) y se inicializaron repositorios Git en cada una, a manera de
 mantener un control de versiones en cada una.
 
-\paragraph{Entorno de Trabajo para el Backend}
+\subsubsection{Entorno de Trabajo para el Backend}
 
 El backend utilizará Ruby con Sinatra. Sinatra se diferencia de, por
 ejemplo, Rails, en que es un framework mucho más simple. Por esto, es
@@ -1145,7 +1214,7 @@ que se montará el backend mismo, o sea, \texttt{/api/v1}, y la otra, en
 la que se montará un servidor estático que sirva los archivos en la
 carpeta \texttt{public}.
 
-\paragraph{Entorno de Trabajo para el Frontend}
+\subsubsection{Entorno de Trabajo para el Frontend}
 
 De la misma forma en que Switch utilizará Brunch para crear y
 administrar proyectos, se decidió utilizar la misma solución para
@@ -1203,7 +1272,7 @@ Este comando utiliza el esqueleto presente en
 \href{https://github.com/meleyal/brunch-crumbs}{github.com/meleyal/brunch-crumbs}
 para crear un directorio con la estructura ya mencionada.
 
-\subsubsection{Prototipado de la Interfaz}
+\subsection{Prototipado de la Interfaz}
 
 \label{section:prototyping}
 
@@ -1277,7 +1346,7 @@ haya estado trabajando o crear uno nuevo directamente.
 \label{figures:projects-view}}
 \end{figure}
 
-\subsubsection{Creación de Servicios en el Backend}
+\subsection{Creación de Servicios en el Backend}
 
 \label{section:create-services}
 
@@ -1319,7 +1388,7 @@ archivos en el directorio raíz de un projecto.
 \end{Highlighting}
 \end{Shaded}
 
-\paragraph{Creación de Proyectos}
+\subsubsection{Creación de Proyectos}
 
 La creación de un proyecto nuevo es relativamente simple. Consiste en
 crear un nuevo proyecto en la base de datos con el nombre que provee el
@@ -1376,7 +1445,7 @@ futura implementación podría agregarse algún mecanismo que verifique la
 disponibilidad del puerto al momento de asignarlo, o bien, verifique y
 asigne puertos cada vez que se ensamble y corra el proyecto.
 
-\paragraph{Manipulación de Archivos}
+\subsubsection{Manipulación de Archivos}
 
 La manipulación de archivos se hace directamente sobre ellos usando
 librerías estándar de Ruby. Sólo se discutirán algunas de las
@@ -1511,7 +1580,7 @@ nueva representación de éste para actualizar el modelo en el frontend.
 La llamada a \texttt{File.rename} permite no sólo renombrar el archivo o
 directorio, sino que además permite cambiar su ruta.
 
-\paragraph{Ensamblado y Servidor de Pruebas}
+\subsubsection{Ensamblado y Servidor de Pruebas}
 
 Para realizar el ensamblado se utiliza Brunch. De manera muy similar a
 la creación de proyectos, es necesario ejecutar un comando de terminal
@@ -1567,9 +1636,9 @@ utilizado por brunch al crear el proyecto). Este script levanta un
 servidor estático en el puerto que se especifique, y si la ejecución fue
 exitosa se retorna la información necesaria al frontend.
 
-\subsubsection{Agregado de Funcionalidad al Prototipo del Frontend}
+\subsection{Agregado de Funcionalidad al Prototipo del Frontend}
 
-\paragraph{Selector de Proyectos}
+\subsubsection{Selector de Proyectos}
 
 Se comenzó por implementar el selector de proyectos. Para esto fue
 necesario implementar el modelo y colección de proyectos. En esta etapa
@@ -1767,7 +1836,7 @@ llamando, pero el navegador también mostraría la ventana de ``Guardar
 Página'' que por defecto aparecería en otro caso, y eso no es lo que se
 quiere en una aplicación web de este estilo.
 
-\subsection{Construcción del Editor de Interfaces}
+\section{Construcción del Editor de Interfaces}
 
 \label{section:interface-editor}
 
@@ -1967,11 +2036,11 @@ canvas:
 \clearpage
 \newpage
 
-\section{Resultados}
+\chapter{Resultados}
 
 \label{sections:results}
 
-\subsection{Producto Final}
+\section{Producto Final}
 
 La herramienta que se logró en este trabajo permite desarrollar
 aplicaciones web completas en un navegador. Desde la creación del
@@ -2000,14 +2069,14 @@ o usar el atajo de teclado \texttt{CMD+R} (\texttt{CTRL+R} en Windows y
 Linux) para que el programa ensamble y levante el servidor con el
 proyecto.
 
-\subsection{Modo de Uso de la Herramienta}
+\section{Modo de Uso de la Herramienta}
 
 En esta sección se describirá cómo utilizar la herramienta. Es
 importante mencionar que la solución propuesta está pensada para
 usuarios que ya tengan conocimientos para programar en Backbone, por lo
 que no se explicará cómo desarrollar con este framework.
 
-\subsubsection{Creación y Selección de Proyectos}
+\subsection{Creación y Selección de Proyectos}
 
 Al ingresar por primera vez, al desarrollador se le presenta la ventana
 de selección de proyectos. En ella, se mostrarán los proyectos
@@ -2030,7 +2099,7 @@ existente (1) o crear uno nuevo (2). \label{figures:tutorial-projects}}
 En ambos casos, se abrirá el proyecto y el usuario será presentado con
 la vista principal de la aplicación.
 
-\subsubsection{Manejo de Archivos y Carpetas}
+\subsection{Manejo de Archivos y Carpetas}
 
 El usuario puede realizar acciones básicas sobre los archivos. Para
 crear un archivo nuevo, basta con hacer click secundario sobre el
@@ -2087,7 +2156,7 @@ Figura \ref{figures:tutorial-confirm}.
 archivo o carpeta. \label{figures:tutorial-confirm}}
 \end{figure}
 
-\subsubsection{Edición de Archivos}
+\subsection{Edición de Archivos}
 
 Para abrir un archivo, se debe hacer click en él. Se cargará el editor
 de código a la derecha, mostrando los contenidos de éste. Ahí, el
@@ -2119,7 +2188,7 @@ En caso de que el usuario abriera otro archivo sin antes haber guardado
 los cambios, el sistema automáticamente guardará los cambios por él
 antes de cambiar al siguiente archivo.
 
-\subsubsection{Edición de Templates}
+\subsection{Edición de Templates}
 
 Cuando el usuario hace click en un template (archivos denotados con un
 ícono específico en el explorador de archivos, ver Figura
@@ -2161,7 +2230,7 @@ entre el modo de edición de HTML y el editor visual.
 \label{figures:tutorial-html}}
 \end{figure}
 
-\subsubsection{Ejecutar el Proyecto}
+\subsection{Ejecutar el Proyecto}
 
 La ejecución del proyecto consiste en ensamblarlo y ejecutarlo. Existen
 varias formas de hacer esto. Si se desea ensamblar y ejecutar el
@@ -2200,7 +2269,7 @@ detalle del error, como se puede ver en la Figura
 ensamblado. \label{figures:tutorial-error}}
 \end{figure}
 
-\subsubsection{Archivado del Proyecto}
+\subsection{Archivado del Proyecto}
 
 Una vez que el proyecto se encuentre finalizado o listo para ser subido
 a un servidor, se deberá ``archivar''. Esta opción ensambla el proyecto,
@@ -2210,7 +2279,7 @@ esta opción, que puede verse en la Figura
 \ref{figures:tutorial-contextual}, el servidor ensambla y comprime el
 proyecto en un archivo ZIP, que luego comienza a descargarse.
 
-\subsubsection{Otras Características}
+\subsection{Otras Características}
 
 Existen algunas características extra disponibles para el desarrollador,
 que no se discutieron en detalle en el proceso de construcción.
@@ -2226,14 +2295,14 @@ Además, para cerrar un archivo, es posible presionar \texttt{CTRL+W}.
 \clearpage
 \newpage
 
-\section{Conclusiones}
+\chapter{Conclusiones}
 
 \label{section:conclusion}
 
 A continuación se presentarán conclusiones del presente trabajo, con
 respecto a la solución lograda y conclusiones para trabajo futuro.
 
-\subsection{Sobre la Solución}
+\section{Sobre la Solución}
 
 Después de algunos experimentos iniciales de prototipado de interfaces,
 se estimó que desarrollar aplicaciones usando Switch IDE podría ahorrar
@@ -2247,7 +2316,7 @@ se podría facilitar gran parte de esta tarea proveyendo al desarrollador
 con widgets utilizados comúnmente en el desarrollo de aplicaciones, como
 botones, formularios, tablas, entre otras.
 
-\subsection{Trabajo Futuro}
+\section{Trabajo Futuro}
 
 \label{section:future-work}
 
@@ -2362,7 +2431,7 @@ combina ambos frameworks.
 \clearpage
 \newpage
 
-\section{Referencias}
+\chapter{Referencias}
 
 {[}1{]} Open Source Initiative, ``MIT License'' Disponible:
 \href{http://opensource.org/licenses/MIT}{http://opensource.org/licenses/MIT}.

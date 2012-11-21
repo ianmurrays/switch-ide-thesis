@@ -1,4 +1,4 @@
-% Switch IDE
+% Switch IDE: Desarrollo de un Entorno de Desarrollo Integrado con Constructor de Intefaces para Aplicaciones Web
 % **Borrador** --- Universidad Técnica Federico Santa María
 % Ian Murray Schlegel
 

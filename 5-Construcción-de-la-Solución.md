@@ -40,7 +40,7 @@ La solución es una aplicación mayoritariamente de lado de cliente, por lo que 
 
 Algunas de las tareas que debe llevar a cabo son realizadas por la utilidad Brunch, por lo que sólo es necesario hacer que el servidor ejecute un comando en el terminal. El resto de las tareas son básicamente manipulación de archivos, para lo cual Ruby trae funciones y librerías.
 
-El backend proveerá una interfaz REST[@rest] para el frontend, principalmente porque Backbone está diseñado para interactuar con APIs de este estilo. En APIs que funcionan con esta metodología, se exponen objetos y sus métodos a requests HTTP, de manera que para obtener información de un proyecto, por ejemplo, el frontend (o cualquier cliente que esté utilizando la API) debe hacer un request como se ve en la Figura \ref{figures:rest}.
+El backend proveerá una interfaz REST [@rest] para el frontend, principalmente porque Backbone está diseñado para interactuar con APIs de este estilo. En APIs que funcionan con esta metodología, se exponen objetos y sus métodos a requests HTTP, de manera que para obtener información de un proyecto, por ejemplo, el frontend (o cualquier cliente que esté utilizando la API) debe hacer un request como se ve en la Figura \ref{figures:rest}.
 
 ![Petición de detalles sobre el proyecto con el identificador "1234". \label{figures:rest}](figures/rest.png)
 
@@ -154,7 +154,7 @@ El backend utilizará Ruby con Sinatra. Sinatra se diferencia de, por ejemplo, R
         - `boot.rb`: este archivo es cargado inicialmente y se encarga de incluir las diferentes librerías y archivos para incializar el servidor
 - `projects`: será el contenedor de los diferentes proyectos que crearán los usuarios
 - `public`: esta carpeta sirve archivos estáticos directamente, como imágenes
-- `Gemfile`: archivo utilizado por Bundler[@bundler] para definir qué librerías y en qué versiones utilizará el backend
+- `Gemfile`: archivo utilizado por Bundler [@bundler] para definir qué librerías y en qué versiones utilizará el backend
 - `config.ru`: archivo utilizado para levantar el servidor
 
 Se decidió estructurar el backend en carpetas de versiones. La idea detrás de esto es poder dividir cada versión de la API de manera de no perder compatibilidad con posibles clientes que estén basados en una versión de la API. Por ejemplo, de llegar a crearse un cliente para tablets, cada cliente estaría atado a una versión específica. Si se cambiara algún método (o se descontinuara), el cliente automáticamente fallaría. En cambio, teniendo diferentes versiones, se puede mantener esta compatibilidad.
@@ -205,7 +205,7 @@ Este comando utiliza el esqueleto presente en [github.com/meleyal/brunch-crumbs]
 
 \label{section:prototyping}
 
-Se comenzó por prototipar la interfaz principal. Como ya se ha dicho, se utilizó Twitter Bootstrap, lo que permitió simplificar considerablemente esta etapa. Para realizar el prototipado se requirió realizar un poco de programación, pues hubo que crear vistas y rutas para ir testeando los casos de uso definidos anteriormente. La programación fue mínima de todas formas, enfocando esta etapa en prototipado y no en funcionalidad.
+Se comenzó por prototipar la interfaz principal. Como ya se ha dicho, se utilizó Twitter Bootstrap, lo que permitió simplificar considerablemente esta etapa. Para hacer el prototipado se requirió realizar un poco de programación, pues hubo que crear vistas y rutas para ir testeando los casos de uso definidos anteriormente. La programación fue mínima de todas formas, enfocando esta etapa en prototipado y no en funcionalidad.
 
 Se prototipó un menú superior con diferentes opciones de manera similar a los menú que se ven en diferentes IDE y programas de escritorio. Se incluyeron opciones como crear un nuevo proyecto, un nuevo archivo, ensamblar y ejecutar el proyecto, etc.
 
@@ -213,7 +213,7 @@ Se agregó la barra lateral izquierda, en la que se muestra una lista de los arc
 
 ![La barra lateral, en la que se pueden apreciar los íconos por carpeta y archivo. \label{figures:sidebar}](figures/sidebar.png)
 
-Para el editor de código central se utilizó CodeMirror[@codemirror]. CodeMirror es un widget que permite editar código en el navegador con resaltado de sintaxis, líneas numeradas, entre otras características. El editor de código se colocó en la parte central de la interfaz, como puede verse en el recuadro rojo de la Figura \ref{figures:codemirror}.
+Para el editor de código central se utilizó CodeMirror [@codemirror]. CodeMirror es un widget que permite editar código en el navegador con resaltado de sintaxis, líneas numeradas, entre otras características. El editor de código se colocó en la parte central de la interfaz, como puede verse en el recuadro rojo de la Figura \ref{figures:codemirror}.
 
 ![El recuadro rojo muestra cómo se ve CodeMirror al mostrar código en CoffeeScript. Puede apreciarse el resaltado de sintaxis y las líneas numeradas. \label{figures:codemirror}](figures/codemirror.png)
 
@@ -465,7 +465,7 @@ def run_project
 end
 ```
 
-Utilizando un programa llamado Forever[@forever], se ejecuta un script que ya se mencionó anteriormente (que además viene con el esqueleto utilizado por brunch al crear el proyecto). Este script levanta un servidor estático en el puerto que se especifique, y si la ejecución fue exitosa se retorna la información necesaria al frontend.
+Utilizando un programa llamado Forever [@forever], se ejecuta un script que ya se mencionó anteriormente (que además viene con el esqueleto utilizado por brunch al crear el proyecto). Este script levanta un servidor estático en el puerto que se especifique, y si la ejecución fue exitosa se retorna la información necesaria al frontend.
 
 
 
@@ -529,7 +529,7 @@ En caso de que el usuario haga click en un archivo, se le pasa la instancia del 
 
 Para esta etapa de la construcción, se incluyó además la posibilidad de ensamblar y ejecutar el proyecto. Para esto, se agregaron métodos en el modelo de proyectos que hace llamadas al backend para ensamblar y ejectuar el servidor de pruebas. El evento es manejado por la barra de navegación, que incluye varios elementos de menú que por esta etapa se mantuvieron inactivos. A la derecha de la barra de navegación se encuentra un botón que permite ensamblar y ejecutar el proyecto con un sólo click, y otros dos que permiten ejecutarlo y ensamblarlo por separado.
 
-En esta etapa se agregaron además atajos de teclado. Para esto se utilizó una librería Javascript llamada Mousetrap[@mousetrap]. Esta librería permite configurar muy fácilmente atajos de teclado con una gran flexibilidad en términos de combinaciones de teclas. Por ejemplo, si se quisiera agregar un atajo de teclado para guardar el archivo actual, se puede hacer lo siguiente:
+En esta etapa se agregaron además atajos de teclado. Para esto se utilizó una librería Javascript llamada Mousetrap [@mousetrap]. Esta librería permite configurar muy fácilmente atajos de teclado con una gran flexibilidad en términos de combinaciones de teclas. Por ejemplo, si se quisiera agregar un atajo de teclado para guardar el archivo actual, se puede hacer lo siguiente:
 
 ```coffeescript
 Mousetrap.bind ["ctrl+s", "command+s"], ->
@@ -570,7 +570,7 @@ Cada "evento" que es generado en Javascript, normalmente es pasado a los callbac
 
 El editor se diseñó de manera que en el centro se tuviera una vista en vivo de lo que se estaba construyendo, mientras que a la derecha se listaran todos los componentes disponibles para agregar al template. Dado que los templates son básicamente HTML, es el navegador el que se encarga de mostrar cómo se vería finalmente. Por esto, lo que se hizo fue agregar elementos a la lista de componentes de manera que al arrastrarlos hacia el centro (el editor), simplemente se agregue su representación en HTML y el navegador se encargaría de mostrar su "vista previa".
 
-Entonces, en la lista de componentes se decidió agregar botones, tablas, formularios, campos de texto, entre otros, y dentro de ellos (en código, no visible para el usuario) agregar un fragmento de HTML que se agregaría al template. Luego, utilizando jQuery UI[@jqueryui], cada componente se convierte en un elemento arrastrable. Con jQuery UI, se necesita convertir elementos en "arrastrables" y además, crear elementos en donde "soltar" lo que el usuario está arrastrando. En este sentido, y, en un primer intento, se convierten todos los elementos en la vista previa en "soltables".
+Entonces, en la lista de componentes se decidió agregar botones, tablas, formularios, campos de texto, entre otros, y dentro de ellos (en código, no visible para el usuario) agregar un fragmento de HTML que se agregaría al template. Luego, utilizando jQuery UI [@jqueryui], cada componente se convierte en un elemento arrastrable. Con jQuery UI, se necesita convertir elementos en "arrastrables" y además, crear elementos en donde "soltar" lo que el usuario está arrastrando. En este sentido, y, en un primer intento, se convierten todos los elementos en la vista previa en "soltables".
 
 ```coffeescript
 # Con la siguiente llamada, se convierte cada elemento en el editor

@@ -24,7 +24,7 @@ def pre_pandoc(string)
   end
 end
 
-def typeset(output = "switch-ide-thesis.pdf")
+def typeset(output = "switch-ide-thesis.tex")
   $root = File.expand_path(File.dirname(__FILE__))
 
   # Join all the markdown files first

@@ -6,6 +6,8 @@ A continuación se presentarán conclusiones del presente trabajo, con respecto 
 
 ## Sobre la Solución
 
+Después de algunos experimentos iniciales de prototipado de interfaces, se estimó que desarrollar aplicaciones usando Switch IDE podría ahorrar aproximadamente un 30% del tiempo invertido en el prototipado de interfaces.
+
 Se cree que la solución que se presenta en este documento podría ayudar a disminuir los tiempos de desarrollo de aplicaciones web, en cierta medida facilitando la tarea que más tiempo consume. Usando Switch IDE, se podría facilitar gran parte de esta tarea proveyendo al desarrollador con widgets utilizados comúnmente en el desarrollo de aplicaciones, como botones, formularios, tablas, entre otras.
 
 <!--
@@ -16,17 +18,14 @@ El haber dividido el proceso de construcción en dos fases permitió evaluar la 
 La división en dos fases fue acertada, y el orden del desarrollo de los diferentes componentes fue correcto, dado que de haber prototipado el editor de interfaces antes de comenzar con la base, se podría haber creado (accidentalmente) un editor completamente incompatible con la solución final. Ahora bien, el haber prototipado un editor de interfaces antes de comenzar con el desarrollo podría haber revelado dificultades que se podrían haber encontrado en la segunda etapa (aunque de todas formas se sabía que era posible desarrollar algo de esa índole dado que existían herramientas similares).
 -->
 
+<!--
 ## Sobre la Elección de Herramientas
 
 Se cree que la elección de herramientas para el backend fue bastante acertada, pues no presentaron problemas durante el desarrollo del proyecto
 
-<!--
-Haber elegido Ruby y Sinatra para construir el backend fue una buena decisión. Permitió crear un backend simple, liviano y mantenible en poco tiempo. 
-
-***YA Y?***
--->
-
 En cuanto al frontend, en un principio se escogió Backbone para construir el frontend por su simplicidad, popularidad y por ser un framework liviano. Resultó ser una herramienta flexible y simple de usar, con una documentación^[http://backbonejs.org/] adecuada que permitió desarrollar con ella sin mayores problemas.
+
+-->
 
 <!--
 En cuanto al frontend, En un principio se escogió Backbone para construir el frontend por su simplicidad, popularidad y por ser un framework liviano. Hubo que considerar que el autor no poseía conocimientos con ninguno de estos frameworks inicialmente, por lo que la elección se vio sesgada hacia una herramienta fácil de aprender y con buena documentación y soporte (o sea, una comunidad activa).
@@ -37,7 +36,7 @@ Backbone probó ser un framework fácil de dominar y muy flexible. La presencia 
 ## Trabajo Futuro
 \label{section:future-work}
 
-Una característica que podría disminuir los tiempos de prototipado sería la de poder "unir" elementos con acciones en el editor de vistas. Por ejemplo, al agregar un botón, el desarrollador podría conectarlo con el controlador de manera que al hacer click se ejecutara una determinada acción. Por ejemplo, en Xcode[@xcode] es posible presionar `CTRL` y arrastrar el componente hacia el código, generéndose una acción que se ejecutaría al presionar el componente (ver Figura \ref{figure:xcode-ctrl-drag}).
+Una característica que podría disminuir los tiempos de prototipado sería la de poder "unir" elementos con acciones en el editor de vistas. Por ejemplo, al agregar un botón, el desarrollador podría conectarlo con el controlador de manera que al hacer click se ejecutara una determinada acción. Por ejemplo, en Xcode [@xcode] es posible presionar `CTRL` y arrastrar el componente hacia el código, generéndose una acción que se ejecutaría al presionar el componente (ver Figura \ref{figure:xcode-ctrl-drag}).
 
 ![En Xcode, al presionar la tecla `CTRL` y arrastrar un widget, es posible crear métodos directamente. \label{figure:xcode-ctrl-drag}](figures/xcode-ctrl-drag.png)
 
@@ -47,11 +46,11 @@ Otra característica importante es la de no necesitar ensamblar el proyecto cons
 
 Una adición que se cree agilizaría el trabajo en proyectos con archivos grandes es la de no enviar el archivo completo cada vez que se guarden cambios. Este es el comportamiento actual y, si bien no se nota para archivos livianos, sí se sentiría al momento de guardar archivos relativamente grandes. Una posible solución sería enviar parches, es decir, guardar en el frontend el estado en el que se encuentra el archivo en el servidor, y, al momento de guardar cambios, enviar sólo las diferencias, optimizando la cantidad de información enviada. Por ejemplo, si se tuviera un archivo con 200 líneas de código y sólo se quisiera agregar 2 líneas con comentarios, sólo se tendría que transmitir aproximadamente un 1% del archivo.
 
-En cuando a optimizaciones, si bien Javascript es un lenguaje con recolección de basura y el desarrollador no debería preocuparse del manejo de memoria, en Backbone es muy fácil comenzar a fugar ("leak", en inglés) objetos a memoria. Esto es porque la recolección de basura sólo elimina objetos de memoria cuando ya no existen referencias a éste. En Backbone, al haber tantos objetos dependiendo de otros y escuchando notificaciones de otros, aun cuando se haya eliminado una vista del documento, el objeto seguirá escuchando eventos de otros objetos y seguirá en memoria. Siendo este trabajo un proyecto de Backbone relativamente grande, la posibilidad de empezar a fugar objetos es alta. Existen algunas guías para mejorar el rendimiento de aplicaciones escritas en Backbone como la escrita por la empresa Paydirt[@paydirt-article], que convendría seguir y aplicar en este proyecto y que se cree ayudarían a mejorar su rendimiento.
+En cuando a optimizaciones, si bien Javascript es un lenguaje con recolección de basura y el desarrollador no debería preocuparse del manejo de memoria, en Backbone es muy fácil comenzar a fugar ("leak", en inglés) objetos a memoria. Esto es porque la recolección de basura sólo elimina objetos de memoria cuando ya no existen referencias a éste. En Backbone, al haber tantos objetos dependiendo de otros y escuchando notificaciones de otros, aun cuando se haya eliminado una vista del documento, el objeto seguirá escuchando eventos de otros objetos y seguirá en memoria. Siendo este trabajo un proyecto de Backbone relativamente grande, la posibilidad de empezar a fugar objetos es alta. Existen algunas guías para mejorar el rendimiento de aplicaciones escritas en Backbone como la escrita por la empresa Paydirt [@paydirt-article], que convendría seguir y aplicar en este proyecto y que se cree ayudarían a mejorar su rendimiento.
 
 En cuando a la edición de templates, en la solución propuesta no es posible cambiar propiedades de los diferentes widgets visualmente (como por ejemplo cambiar el color a un botón, o cambiar ciertas propiedades de una tabla). Se propone agregar un editor de propiedades que permita cambiar diferentes atributos de algún componente seleccionado, de manera de evitar que el desarrollador deba editar HTML directamente.
 
-En la misma línea, se cree que cambiar el framework que se utiliza para el desarrollo por una conocida como Knockback[@knockback] podría facilitar el trabajo del desarrollador aún más al editar templates. Knockback es una combinación de dos frameworks: Backbone (la que se utiliza actualmente) y Knockout. Knockout es conocido por ofrecer "bindings", es decir, permite agregar atributos HTML a las vistas de manera que se actualicen automáticamente, sin necesidad de escribir código dentro de ellas. Como por ejemplo:
+En la misma línea, se cree que cambiar el framework que se utiliza para el desarrollo por una conocida como Knockback [@knockback] podría facilitar el trabajo del desarrollador aún más al editar templates. Knockback es una combinación de dos frameworks: Backbone (la que se utiliza actualmente) y Knockout. Knockout es conocido por ofrecer "bindings", es decir, permite agregar atributos HTML a las vistas de manera que se actualicen automáticamente, sin necesidad de escribir código dentro de ellas. Como por ejemplo:
 
 ```html
 <p>First name: <strong data-bind="text: firstName"></strong></p>
